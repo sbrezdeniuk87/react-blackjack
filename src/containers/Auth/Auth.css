@@ -1,0 +1,18 @@
+.Auth{
+	/*padding: 0;*/
+	background: url(../../images/tableFon.png) repeat center center fixed;
+	background-size: 100% 100%;
+    position: fixed;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+	padding-top: 100px;
+	flex-grow: 1;
+	
+}
+
+.Auth img{
+	max-width: 200px;
+	max-height: 50px;
+}
