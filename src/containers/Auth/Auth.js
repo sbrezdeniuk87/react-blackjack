@@ -126,7 +126,6 @@ class Auth extends Component{
 						<Button 
 							type="primary" 
 							onClick={this.registerHandler}
-							disabled={!this.state.isFormValid}
 						>Зарегистрироваться</Button>
 					</form>
 				</div>
