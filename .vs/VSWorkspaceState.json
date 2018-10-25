@@ -1,6 +1,13 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\src",
+    "\\src\\components",
+    "\\src\\components\\UI",
+    "\\src\\components\\UI\\Input",
+    "\\src\\containers",
+    "\\src\\containers\\Auth"
   ],
+  "SelectedNode": "\\src\\containers\\Auth\\Auth.js",
   "PreviewInSolutionExplorer": false
 }
