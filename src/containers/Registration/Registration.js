@@ -2,7 +2,8 @@ import React, {Component} from 'react'
 import classes from './Registration.css'
 import Input from '../../components/UI/Input/Input'
 import Button from '../../components/UI/Button/Button'
-// import is from 'is_js'
+import {NavLink} from 'react-router-dom'
+import is from 'is_js'
 
 class Registration extends Component{
 
@@ -49,7 +50,7 @@ class Registration extends Component{
 				value: '',
 				type: 'password',
 				label: 'Повторить пароль',
-				errorMessage: 'Введите корректный пароль',
+				errorMessage: 'Пароль не совпадает',
 				valid: false,
 				touched: false,
 				validation:{
@@ -58,6 +59,54 @@ class Registration extends Component{
 				}
 			}
 		}
+	}
+	validateControl(value, validation, controlName){
+		if(!validation){
+			return true
+		}
+		
+		let isValid = true;
+
+		if(validation.required){
+			isValid = value.trim() !== '' && isValid
+		}
+
+		if(validation.email){
+			isValid = is.email(value) && isValid
+		}
+
+		if(validation.minLength){
+			isValid = value.length >= validation.minLength && isValid 
+		}
+
+		if(controlName === 'passwordRepeat'){
+			let password = this.state.formControls.password.value
+			isValid = value === password && isValid
+		}
+
+		return isValid
+	}
+
+
+	onChangeHandler = (event, controlName)=>{
+		const formControls = {...this.state.formControls}
+		const control = {...formControls[controlName]}
+
+		control.value = event.target.value
+		control.touched = true
+		control.valid = this.validateControl(control.value, control.validation, controlName)
+
+		formControls[controlName] = control
+
+		let isFormValid = true;
+
+		Object.keys(formControls).forEach(name=>{
+			isFormValid = formControls[name].valid && isFormValid
+		})
+
+		this.setState({
+			formControls, isFormValid
+		})
 	}
 
     renderInputs(){
@@ -86,6 +135,11 @@ class Registration extends Component{
 					<form onSubmit={this.submitHandler} className={classes.RegistrationForm}>
 						{this.renderInputs()}
 						<hr />
+						<NavLink to='/'>
+							<Button 
+								type="success" 							
+							>Назад</Button>
+						</NavLink>
 						<Button 
 							type="primary" 
 							onClick={this.registerHandler}
