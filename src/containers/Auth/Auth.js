@@ -2,6 +2,7 @@
 import classes from './Auth.css'
 import Input from '../../components/UI/Input/Input'
 import Button from '../../components/UI/Button/Button'
+import {NavLink} from 'react-router-dom'
 import is from 'is_js'
 
 class Auth extends Component{
@@ -41,7 +42,7 @@ class Auth extends Component{
 	}
 
 	registerHandler = () =>{
-
+		
 	}
 
 	submitHandler = event =>{
@@ -123,10 +124,12 @@ class Auth extends Component{
 							onClick={this.loginHandler}
 							disabled={!this.state.isFormValid}
 						>Войти</Button>
-						<Button 
-							type="primary" 
-							onClick={this.registerHandler}
-						>Зарегистрироваться</Button>
+						<NavLink to='/registration'>
+							<Button 
+								type="primary" 
+								onClick={this.registerHandler}
+							>Зарегистрироваться</Button>
+						</NavLink>
 					</form>
 				</div>
 			</div>
