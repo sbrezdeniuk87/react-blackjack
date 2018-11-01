@@ -7,6 +7,7 @@ import DealerHand from '../../components/DealerHand/DealerHand'
 import PlayerHand from '../../components/PlayerHand/PlayerHand'
 
 class PlayTable extends Component {
+    
     state = {
         deck: [
             {
@@ -304,16 +305,48 @@ class PlayTable extends Component {
         ],
         bet: 0,
         cash: 1500,
+        playerHand: [],
+        playerHandSum: 0,
+        dealerHand: [],
+        dealerHandSum: 0,
         isPlay: false,
         isEnough: false,
         isMore: false
     }
+
+    getRandomInt = (min, max) => Math.floor(Math.random()*(max-min+1)+min);
     
+    getCard = () => this.state.deck[this.getRandomInt(0, this.state.deck.length - 1)];
+    
+    getSum = (hand) =>{
+        let sum = 0;
+
+        for( let i=0; i<hand.length; i++){
+            let card = hand[i];
+            if(card.name !== 'Ace'){
+                sum += card.value;
+            }
+        }
+    
+        for(let i=0; i<hand.length; i++){
+            let card = hand[i];
+            if(card.name === 'Ace'){
+                if(sum > 10){
+                    sum ++;
+                }else{
+                    sum += card.value;
+                }
+            }
+        }
+    
+        return sum;
+    }
+
     onCreateDibHandler = value =>{
         let div = document.createElement('div');
         switch(value){
             case '1':
-                div.className = classes.dib_1
+                div.className = classes.dib_1                
                 break;
             case '5':
                 div.className = classes.dib_5
@@ -333,7 +366,7 @@ class PlayTable extends Component {
         div.innerHTML = value;
         let bet = parseInt(this.state.bet) + parseInt(value);
         let cash = parseInt(this.state.cash) - parseInt(value);
-        if(bet !== 0 && cash >= 0){
+        if(bet !== 0 && cash >= 0 && this.state.playerHandSum === 0){
             let isPlay = true;
             this.setState({
                 bet, cash, isPlay
@@ -344,14 +377,51 @@ class PlayTable extends Component {
                 
     }
 
-    onPlayHandler = ()=>{
-        console.log('Play GAME');
+    onPlayHandler = async ()=>{
+        let playerHand = await [this.getCard(), this.getCard()];
+        let dealerHand = await [this.getCard()];
+        let playerHandSum = await this.getSum(playerHand);
+        let dealerHandSum = await this.getSum(dealerHand);
+
         this.setState({
+            playerHand,
+            playerHandSum,
+            dealerHand,
+            dealerHandSum,
             isPlay: false,
             isEnough: true,
             isMore: true
         });
+
+        if(playerHandSum === 11){
+            alert('You WIN');
+            let cash = this.state.cash + this.state.bet*2;
+            this.setState({
+                playerHandSum: 0,
+                bet: 0,
+                cash
+            })    
+        }else if(playerHandSum > 11){
+            alert('YOU LOSE');
+            this.setState({
+                playerHandSum: 0,
+                bet: 0
+            })  
+        }
+       
     }
+
+    onEnoughHandler = async ()=>{
+        let dealerHand = this.state.dealerHand;
+        dealerHand.push(this.getCard());
+        this.setState({
+            dealerHand
+        })
+    }
+    // onMoreHandler = async () =>{
+    //     let playerHand = this.state.playerHand;
+    //     playerHand.push
+    // }
 
     render(){
         return(
@@ -360,14 +430,22 @@ class PlayTable extends Component {
                     bet={this.state.bet}
                     cash={this.state.cash}
                 />
-                <DealerHand />
-                <PlayerHand />
+                <DealerHand 
+                    dealerHand={this.state.dealerHand}
+                    dealerHandSum={this.state.dealerHandSum}
+                />
+                <PlayerHand 
+                    playerHand={this.state.playerHand}
+                    playerHandSum={this.state.playerHandSum}
+                />
                 <Dibs 
                     dibs={this.state.dibs}
                     onDibCLick={this.onCreateDibHandler}
                 />
                 <PlayButton 
                     onPlay={this.onPlayHandler}
+                    onEnough={this.onEnoughHandler}
+                    // onMore={this.onMoreHandler}
                     disabledPlay={!this.state.isPlay}
                     disabledEnough={!this.state.isEnough}
                     disabledMore={!this.state.isMore}

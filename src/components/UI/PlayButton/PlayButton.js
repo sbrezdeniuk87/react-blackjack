@@ -9,6 +9,7 @@ const PlayButton = props =>(
           >Play</button>
           <button className={classes.btn}
             disabled={props.disabledEnough}
+            onClick={()=>props.onEnough()}
           >Enough</button>
           <button className={classes.btn}
             disabled={props.disabledMore}
