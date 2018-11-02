@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import classes from './Profile.css'
-// import {NavLink} from 'react-router-dom'
+import {NavLink} from 'react-router-dom'
 import Button from '../../components/UI/Button/Button'
 
 class Profile extends Component{
@@ -16,9 +16,11 @@ class Profile extends Component{
                     </p>
                     <hr />
                     <div className={classes.Buttons}>
-                        <Button 
-                            type="success" 
-                        >Играть</Button>
+                        <NavLink to="/play">
+                            <Button 
+                                type="success" 
+                            >Играть</Button>
+                        </NavLink>                        
                         <Button 
                             type="primary" 
                         >Пополнить счет</Button>

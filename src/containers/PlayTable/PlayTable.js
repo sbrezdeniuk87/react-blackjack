@@ -342,11 +342,13 @@ class PlayTable extends Component {
         return sum;
     }
 
+    onDeletDib = () => document.getElementById('dibsBet').innerHTML=''; 
+
     onCreateDibHandler = value =>{
         let div = document.createElement('div');
         switch(value){
             case '1':
-                div.className = classes.dib_1                
+                div.className = classes.dib_1 
                 break;
             case '5':
                 div.className = classes.dib_5
@@ -371,7 +373,7 @@ class PlayTable extends Component {
             this.setState({
                 bet, cash, isPlay
             });
-            document.getElementById('root').appendChild(div);
+            document.getElementById('dibsBet').appendChild(div);
         }
         
                 
@@ -393,20 +395,34 @@ class PlayTable extends Component {
             isMore: true
         });
 
-        if(playerHandSum === 11){
-            alert('You WIN');
-            let cash = this.state.cash + this.state.bet*2;
-            this.setState({
-                playerHandSum: 0,
-                bet: 0,
-                cash
-            })    
-        }else if(playerHandSum > 11){
-            alert('YOU LOSE');
-            this.setState({
-                playerHandSum: 0,
-                bet: 0
-            })  
+        if(playerHandSum === 21){ 
+            setTimeout(()=>{
+                let cash = this.state.cash + this.state.bet*2;
+                this.setState({
+                    playerHandSum: 0,
+                    dealerHandSum: 0,
+                    bet: 0,
+                    cash,
+                    playerHand:[],
+                    dealerHand:[]
+                }) 
+                this.onDeletDib();  
+                alert('У Вас BlackJack!!!!!!!!!!!!!'); 
+            }, 600);           
+            
+        }else if(playerHandSum > 21){
+            setTimeout(()=>{
+                alert('Вы проиграли!!!!!!!');
+                this.onDeletDib();
+                this.setState({
+                    playerHandSum: 0,
+                    bet: 0,
+                    dealerHandSum: 0,
+                    playerHand:[],
+                    dealerHand:[]
+                })  
+            }, 600);
+            
         }
        
     }
@@ -414,14 +430,114 @@ class PlayTable extends Component {
     onEnoughHandler = async ()=>{
         let dealerHand = this.state.dealerHand;
         dealerHand.push(this.getCard());
+        let dealerHandSum = await this.getSum(dealerHand);
+
+        while(dealerHandSum < 17){
+            await dealerHand.push(this.getCard());
+            dealerHandSum = await this.getSum(dealerHand);
+        }
+
+        if(dealerHandSum === 21){
+            setTimeout(()=>{
+                this.setState({
+                    playerHandSum: 0,
+                    bet: 0,
+                    dealerHandSum: 0,
+                    playerHand:[],
+                    dealerHand:[]
+                }) 
+                this.onDeletDib();  
+                alert('У дилера BlackJack! Вы проиграли((((('); 
+            }, 600); 
+        }else if(dealerHandSum > 21 || this.state.playerHandSum > dealerHandSum){
+            setTimeout(()=>{
+                let cash = this.state.cash + this.state.bet*2;
+                this.setState({
+                    playerHandSum: 0,
+                    dealerHandSum: 0,
+                    bet: 0,
+                    cash,
+                    playerHand:[],
+                    dealerHand:[]
+                }) 
+                this.onDeletDib();  
+                alert('Вы выграли!!!!!!!!!!!!!'); 
+            }, 600);        
+        }else if(dealerHandSum === this.state.playerHandSum){
+            setTimeout(()=>{
+                let cash = this.state.cash + this.state.bet;
+                this.setState({
+                    playerHandSum: 0,
+                    dealerHandSum: 0,
+                    bet: 0,
+                    cash,
+                    playerHand:[],
+                    dealerHand:[]
+                }) 
+                this.onDeletDib();  
+                alert('Победила дружба!!!!!!!!!!!!!'); 
+            }, 600); 
+        }else{
+            setTimeout(()=>{
+                alert('Вы проиграли!!!!!!!');
+                this.onDeletDib();
+                this.setState({
+                    playerHandSum: 0,
+                    bet: 0,
+                    dealerHandSum: 0,
+                    playerHand:[],
+                    dealerHand:[]
+                })  
+            }, 600);
+        }
+
         this.setState({
-            dealerHand
+            dealerHand,
+            dealerHandSum,
+            isEnough: false,
+            isMore: false
         })
+
     }
-    // onMoreHandler = async () =>{
-    //     let playerHand = this.state.playerHand;
-    //     playerHand.push
-    // }
+    onMoreHandler = async () =>{
+        let playerHand = this.state.playerHand;
+        playerHand.push(this.getCard());
+        let playerHandSum = await this.getSum(playerHand);
+        this.setState({
+            playerHand,
+            playerHandSum
+        })
+
+        if(playerHandSum === 21){ 
+            setTimeout(()=>{
+                let cash = this.state.cash + this.state.bet*2;
+                this.setState({
+                    playerHandSum: 0,
+                    dealerHandSum: 0,
+                    bet: 0,
+                    cash,
+                    playerHand:[],
+                    dealerHand:[]
+                }) 
+                this.onDeletDib();  
+                alert('У Вас BlackJack!!!!!!!!!!!!!'); 
+            }, 600);           
+            
+        }else if(playerHandSum > 21){
+            setTimeout(()=>{
+                alert('Вы проиграли!!!!!!!');
+                this.onDeletDib();
+                this.setState({
+                    playerHandSum: 0,
+                    bet: 0,
+                    dealerHandSum: 0,
+                    playerHand:[],
+                    dealerHand:[]
+                })  
+            }, 600);
+            
+        }
+    }
 
     render(){
         return(
@@ -434,6 +550,7 @@ class PlayTable extends Component {
                     dealerHand={this.state.dealerHand}
                     dealerHandSum={this.state.dealerHandSum}
                 />
+                <div id="dibsBet"></div>
                 <PlayerHand 
                     playerHand={this.state.playerHand}
                     playerHandSum={this.state.playerHandSum}
@@ -445,7 +562,7 @@ class PlayTable extends Component {
                 <PlayButton 
                     onPlay={this.onPlayHandler}
                     onEnough={this.onEnoughHandler}
-                    // onMore={this.onMoreHandler}
+                    onMore={this.onMoreHandler}
                     disabledPlay={!this.state.isPlay}
                     disabledEnough={!this.state.isEnough}
                     disabledMore={!this.state.isMore}

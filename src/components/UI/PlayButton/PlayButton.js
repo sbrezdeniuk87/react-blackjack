@@ -13,6 +13,7 @@ const PlayButton = props =>(
           >Enough</button>
           <button className={classes.btn}
             disabled={props.disabledMore}
+            onClick={()=>props.onMore()}
           >More</button>          
     </div>
 )
