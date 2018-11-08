@@ -77,9 +77,14 @@ export function onEnoughHandler(){
     return async (dispatch, getState) => {
         const state = getState().playTable;
         let dealerHand = state.dealerHand;
-        dealerHand.push(getCard(state));
+        await dealerHand.push(getCard(state));
         let dealerHandSum = await getSum(dealerHand);
-
+        const deal_setState_first = {
+            dealerHand,
+            dealerHandSum
+        }
+        await dispatch(dealHand(deal_setState_first));
+        
         while(dealerHandSum < 17){
             await dealerHand.push(getCard(state));
             dealerHandSum = await getSum(dealerHand);
@@ -87,7 +92,7 @@ export function onEnoughHandler(){
                 dealerHand,
                 dealerHandSum
             }
-            dispatch(dealHand(deal_setState));
+            await dispatch(dealHand(deal_setState));
         }
 
         if(dealerHandSum === 21){
