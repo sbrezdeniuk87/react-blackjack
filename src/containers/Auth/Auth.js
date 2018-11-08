@@ -4,6 +4,7 @@ import Input from '../../components/UI/Input/Input'
 import Button from '../../components/UI/Button/Button'
 import {NavLink} from 'react-router-dom'
 import is from 'is_js'
+// import { timingSafeEqual } from 'crypto';
 
 class Auth extends Component{
 	
@@ -111,6 +112,15 @@ class Auth extends Component{
 		})
 	}
 
+	// componentDidMount(){
+	// 	this.testHandler()
+	// }
+
+	// testHandler = ()=>{
+	// 	fetch('http://localhost:3001')
+	// 		.then(response => response.json())
+	// 		.then(({data})=>console.log(data));
+	// }
 
 	render(){
 		return(
