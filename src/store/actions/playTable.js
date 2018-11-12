@@ -307,9 +307,3 @@ function onDeletDib() {
     return document.getElementById('dibsBet').innerHTML='';
 }    
 
-// export function betSetState(bet, cash, isPlay){
-//     return{
-//         type: BET_SET_STATE,
-//         bet, cash, isPlay
-//     }
-// }

@@ -4,7 +4,8 @@ import Input from '../../components/UI/Input/Input'
 import Button from '../../components/UI/Button/Button'
 import {NavLink} from 'react-router-dom'
 import is from 'is_js'
-// import { timingSafeEqual } from 'crypto';
+import axios from 'axios';
+
 
 class Auth extends Component{
 	
@@ -38,8 +39,14 @@ class Auth extends Component{
 		}
 	}
 
-	loginHandler = () =>{
-
+	loginHandler = async () =>{
+		const dataAuth = await {
+			email: this.state.formControls.email.value,
+			pass: this.state.formControls.password.value
+		};
+		
+		const respons = await axios.post('http://localhost:3001/',dataAuth);
+		console.log(respons.data);
 	}
 
 	registerHandler = () =>{
