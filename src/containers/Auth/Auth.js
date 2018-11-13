@@ -42,7 +42,7 @@ class Auth extends Component{
 	loginHandler = async () =>{
 		const dataAuth = await {
 			email: this.state.formControls.email.value,
-			pass: this.state.formControls.password.value
+			password: this.state.formControls.password.value
 		};
 		
 		const respons = await axios.post('http://localhost:3001/',dataAuth);
