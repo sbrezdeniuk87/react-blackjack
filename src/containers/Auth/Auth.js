@@ -2,7 +2,7 @@
 import classes from './Auth.css'
 import Input from '../../components/UI/Input/Input'
 import Button from '../../components/UI/Button/Button'
-import {NavLink} from 'react-router-dom'
+import {NavLink, Redirect} from 'react-router-dom'
 import is from 'is_js'
 import axios from 'axios';
 
@@ -10,6 +10,7 @@ import axios from 'axios';
 class Auth extends Component{
 	
 	state = {
+		isLogin: false,
 		isFormValid: false,
 		formControls:{
 			email:{
@@ -47,11 +48,18 @@ class Auth extends Component{
 		
 		const respons = await axios.post('http://localhost:3001/',dataAuth);
 		console.log(respons.data);
+		if(respons.data){
+			localStorage.setItem('userId', respons.data);
+			
+			this.setState({
+				isLogin: true
+			});
+		}else{
+			alert('Неверный email или пароль');
+		}
 	}
 
-	registerHandler = () =>{
-		
-	}
+	
 
 	submitHandler = event =>{
 		event.preventDefault();
@@ -130,27 +138,31 @@ class Auth extends Component{
 	// }
 
 	render(){
-		return(
-			<div className={classes.Auth} >
-				<div>
-					<form onSubmit={this.submitHandler} className={classes.AuthForm}>
-						{this.renderInputs()}
-						<hr />
-						<Button 
-							type="success" 
-							onClick={this.loginHandler}
-							disabled={!this.state.isFormValid}
-						>Войти</Button>
-						<NavLink to='/registration'>
+		if(this.state.isLogin){
+			return (<Redirect to='/profile' />);
+		}else{
+			return(
+				<div className={classes.Auth} >
+					<div>
+						<form onSubmit={this.submitHandler} className={classes.AuthForm}>
+							{this.renderInputs()}
+							<hr />
 							<Button 
-								type="primary" 
-								onClick={this.registerHandler}
-							>Зарегистрироваться</Button>
-						</NavLink>
-					</form>
+								type="success" 
+								onClick={this.loginHandler}
+								disabled={!this.state.isFormValid}
+							>Войти</Button>
+							<NavLink to='/registration'>
+								<Button 
+									type="primary" 								
+								>Зарегистрироваться</Button>
+							</NavLink>
+						</form>
+					</div>
 				</div>
-			</div>
-		)
+			)
+		}
+		
 	}
 }
 

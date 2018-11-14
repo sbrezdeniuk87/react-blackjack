@@ -1,37 +1,44 @@
-var mongoose = require('mongoose')
-var crypto = require('crypto')
-var User = require('./modules/Users.js');
+const mongoose = require('mongoose');
+const crypto = require('crypto');
+const User = require('./module/Users.js');
+const objectId = require("mongodb").ObjectID;
 mongoose.Promise = require('bluebird');
-mongoose.connect("mongodb://localhost:27017/blackjack", { useMongoClient: true});
+mongoose.connect("mongodb://localhost:27017/black_jack", { useNewUrlParser: true }); 
+mongoose.set('useCreateIndex', true);
 
 
 // User API
 
 exports.createUser = function(userData){
-	var user = {
+	let user = {
 		name: userData.name,
 		email: userData.email,
-		pass: hash(userData.pass)
+		password: hash(userData.password)
 	}
 	
-	return new User(user).save((err)=>{
-		mongoose.disconnect();
-		if(err) return console.log(err);
-	});
+	return new User(user).save()
+		.then(()=>{
+			// function(err){
+				// mongoose.disconnect();
+				console.log("User create");
+				// if(err) return console.log(err);
+			// }
+		})
+		.catch((err)=>console.log(err));
 }
 
-exports.getUser = function(name) {
+// exports.getUser = function(name) {
 	
-	return User.findOne(name).then((doc)=>{
-		return Promise.resolve(doc);
-	});
-}
+// 	return User.findOne(name).then((doc)=>{
+// 		return Promise.resolve(doc);
+// 	});
+// }
 
 exports.checkUser = function(userData) { 
 	return User
-		.findOne({name: userData.name})
+		.findOne({email: userData.email})
 		.then(function(doc){
-			if ( doc.pass == hash(userData.pass) ){
+			if ( doc.password == hash(userData.password) ){
 				console.log("User password is ok");
 				return Promise.resolve(doc);
 			} else {
@@ -40,12 +47,25 @@ exports.checkUser = function(userData) {
 		})
 }
 
-exports.updateUser = function(data){
-	return User.findOneAndUpdate({name: data.user}, {bet: data.bet}, (err, result)=>{
-		if (err) throw err;
-		console.log(result);
-	});
+exports.checkUserId = function(userId) { 
+	return User
+		.findOne({"_id": new objectId(userId)})
+		.then(function(doc){
+			if (doc){
+				console.log("doc");
+				return Promise.resolve(doc);
+			} else {
+				return false; 
+			}
+		})
 }
+
+// exports.updateUser = function(data){
+// 	return User.findOneAndUpdate({name: data.user}, {bet: data.bet}, (err, result)=>{
+// 		if (err) throw err;
+// 		console.log(result);
+// 	});
+// }
 
 function hash(text) {
 	return crypto.createHash('sha1')

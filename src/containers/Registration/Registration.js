@@ -2,12 +2,14 @@ import React, {Component} from 'react'
 import classes from './Registration.css'
 import Input from '../../components/UI/Input/Input'
 import Button from '../../components/UI/Button/Button'
-import {NavLink} from 'react-router-dom'
+import {NavLink, Redirect } from 'react-router-dom'
 import is from 'is_js'
+import axios from 'axios';
 
 class Registration extends Component{
 
     state = {
+		isRegistr: false,
 		isFormValid: false,
 		formControls:{
             name:{
@@ -60,6 +62,24 @@ class Registration extends Component{
 			}
 		}
 	}
+
+	registerHandler = async () =>{
+		const dataAuth = await {
+			name: this.state.formControls.name.value,
+			email: this.state.formControls.email.value,
+			password: this.state.formControls.password.value
+		};
+		console.log(dataAuth);
+		
+		const respons = await axios.post('http://localhost:3001/registration', dataAuth);
+		if(respons.data){
+			console.log(respons.data);
+			this.setState({
+				isRegistr: true
+			});
+		};
+	}
+
 	validateControl(value, validation, controlName){
 		if(!validation){
 			return true
@@ -129,26 +149,31 @@ class Registration extends Component{
 	}
 
     render(){
-		return(
-			<div className={classes.Registration} >
-				<div>
-					<form onSubmit={this.submitHandler} className={classes.RegistrationForm}>
-						{this.renderInputs()}
-						<hr />
-						<NavLink to='/'>
+		if(this.state.isRegistr){
+			return (<Redirect to='/' />)
+		}else{
+			return(
+				<div className={classes.Registration} >
+					<div>
+						<form onSubmit={this.submitHandler} className={classes.RegistrationForm}>
+							{this.renderInputs()}
+							<hr />
+							<NavLink to='/'>
+								<Button 
+									type="success" 							
+								>Назад</Button>
+							</NavLink>
 							<Button 
-								type="success" 							
-							>Назад</Button>
-						</NavLink>
-						<Button 
-							type="primary" 
-							onClick={this.registerHandler}
-							disabled={!this.state.isFormValid}
-						>Зарегистрироваться</Button>
-					</form>
+								type="primary" 
+								onClick={this.registerHandler}
+								disabled={!this.state.isFormValid}
+							>Зарегистрироваться</Button>
+						</form>
+					</div>
 				</div>
-			</div>
-		)
+			)
+		}
+		
 	}
 }
 
