@@ -69,15 +69,20 @@ class Registration extends Component{
 			email: this.state.formControls.email.value,
 			password: this.state.formControls.password.value
 		};
-		console.log(dataAuth);
-		
+				
 		const respons = await axios.post('http://localhost:3001/registration', dataAuth);
 		if(respons.data){
-			console.log(respons.data);
 			this.setState({
 				isRegistr: true
 			});
-		};
+			alert('Пользиватель создан');
+		}else{
+			alert('Такой email уже существует');
+		}
+	}
+
+	submitHandler = event =>{
+		event.preventDefault();
 	}
 
 	validateControl(value, validation, controlName){
