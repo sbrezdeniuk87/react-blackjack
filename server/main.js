@@ -25,7 +25,7 @@ app.post('/',(req ,res)=>{
 			})
 			.catch((error)=>{
                 console.log(error);
-				res.send(error);			
+				res.sendStatus(400, error);			
 			});  
     
    
@@ -42,7 +42,8 @@ app.post('/registration', (req, res)=> {
                     res.json(result);
                 })
                 .catch((err)=>{
-                    console.log(err);                    
+                    console.log(err);
+                    res.sendStatus(400, error);                    
                 });    
   });
 
@@ -50,20 +51,11 @@ app.post('/profile', (req, res)=> {
     if(!req.body) return res.sendStatus(400);
       
     let userId = req.body.userId;
-    console.log('profile',userId);
 
     api.checkUserId(userId)
 			.then((doc)=>{
 				if(doc){
-					// var cookies = new Cookies( req, res); 
-            		// req.session.name = name;
-    			    // api.getUser(name).then((result)=>{
-					// 					let bet = result.bet;
-					// 					let user = result.name;
-					// 					res.render('tablePlay',{bet, user});
-                    // 				});	
-                    console.log("UserID", doc);
-                    res.send(doc);				
+					res.send(doc);				
 				} else {
                     console.log("User error ");
 					res.json(dataUser.email);										
@@ -71,10 +63,7 @@ app.post('/profile', (req, res)=> {
 			})
 			.catch((error)=>{
                 console.log(error);
-				res.json([
-                        {id:1, username: "Sasha"},
-                        {id:2, username:"Vlad"}
-                    ]);			
+				res.sendStatus(400, error);			
 			});  
     
   });
