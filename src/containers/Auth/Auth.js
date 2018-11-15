@@ -47,10 +47,8 @@ class Auth extends Component{
 		};
 		
 		const respons = await axios.post('http://localhost:3001/',dataAuth);
-		console.log(respons.data);
 		if(respons.data){
-			localStorage.setItem('userId', respons.data);
-			
+			localStorage.setItem('userId', respons.data);			
 			this.setState({
 				isLogin: true
 			});
@@ -127,16 +125,7 @@ class Auth extends Component{
 		})
 	}
 
-	// componentDidMount(){
-	// 	this.testHandler()
-	// }
-
-	// testHandler = ()=>{
-	// 	fetch('http://localhost:3001')
-	// 		.then(response => response.json())
-	// 		.then(({data})=>console.log(data));
-	// }
-
+	
 	render(){
 		if(this.state.isLogin){
 			return (<Redirect to='/profile' />);
