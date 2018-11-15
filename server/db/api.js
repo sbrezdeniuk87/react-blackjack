@@ -23,8 +23,9 @@ exports.createUser = function(userData){
 				console.log("User create");
 				// if(err) return console.log(err);
 			// }
+			return true;
 		})
-		.catch((err)=>console.log(err));
+		.catch(()=> {return false});
 }
 
 // exports.getUser = function(name) {
@@ -37,14 +38,20 @@ exports.createUser = function(userData){
 exports.checkUser = function(userData) { 
 	return User
 		.findOne({email: userData.email})
-		.then(function(doc){
-			if ( doc.password == hash(userData.password) ){
-				console.log("User password is ok");
-				return Promise.resolve(doc);
-			} else {
+		.then((doc)=>{
+			if(doc){
+				if ( doc.password == hash(userData.password) ){
+					console.log("User password is ok");
+					return Promise.resolve(doc);
+				} else {
+					return false; 
+				}
+			}else{				
 				return false; 
-			}
-		})
+			}			
+		}).catch(()=>{
+			return false;
+		});
 }
 
 exports.checkUserId = function(userId) { 
@@ -52,7 +59,6 @@ exports.checkUserId = function(userId) {
 		.findOne({"_id": new objectId(userId)})
 		.then(function(doc){
 			if (doc){
-				console.log("doc");
 				return Promise.resolve(doc);
 			} else {
 				return false; 
