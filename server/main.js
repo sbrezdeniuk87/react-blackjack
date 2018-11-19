@@ -3,10 +3,11 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const mongoClient = require("mongodb").MongoClient;
-const objectId = require("mongodb").ObjectID;
+const server = require('http').createServer(app);
+
 
 const api = require('./db/api.js');
+
 
 
 app.use(cors());
@@ -67,6 +68,52 @@ app.post('/profile', (req, res)=> {
 			});  
     
   });
+
+  app.post('/play', (req, res)=> {  
+    if(!req.body) return res.sendStatus(400);
+      
+    let userId = req.body.userId;
+
+    api.checkUserId(userId)
+			.then((doc)=>{
+				if(doc){
+                    console.log('Play', doc);
+					res.send(doc);				
+				} else {
+                    console.log("User error ");
+					res.json(dataUser.email);										
+				}
+			})
+			.catch((error)=>{
+                console.log(error);
+				res.sendStatus(400, error);			
+			});  
+    
+  });
+
+  app.put('/playUser', (req, res)=> {  
+    if(!req.body) return res.sendStatus(400);
+    console.log('dataUpdate', req.body)  
+    let dataUpdate = req.body;
+    console.log('DATA_Update', dataUpdate)  
+    api.updateUser(dataUpdate)
+			.then((doc)=>{
+				if(doc){
+                    console.log('Play', doc);
+					res.send(doc);				
+				} else {
+                    console.log("User error ");
+					res.json(dataUser.email);										
+				}
+			})
+			.catch((error)=>{
+                console.log(error);
+				res.sendStatus(400, error);			
+			});  
+    
+  });
+ 
+
 
 app.listen(3001,()=>{
     console.log("Listened 3001");

@@ -5,7 +5,10 @@ import {FETCH_PLAY_START,
         LOSE_GAME,
         DRAW_GAME,
         DEAL_HAND,
-        PLAY_HAND} from './actionType'
+        PLAY_HAND,
+        DATA_USER} from './actionType'
+// import socketIOClient from "socket.io-client"
+import axios from 'axios'
 
 
 export function fetchMakeBet(bet, cash, isPlay){
@@ -13,6 +16,23 @@ export function fetchMakeBet(bet, cash, isPlay){
         type: FETCH_MAKE_BET,
         bet, cash, isPlay
     }
+}
+
+export function getDataUser(userId){
+    return async dispatch =>{
+        const data = {
+            userId: userId  
+        }
+        const respons = await axios.post('http://localhost:3001/play', data);
+        if(respons.data){
+            const setStateUser = {
+                cash: respons.data.bet,
+                name: respons.data.name
+            }
+            dispatch(dataUser(setStateUser));
+        }
+    }
+       
 }
 
 export function onPlayHandler (){
@@ -48,6 +68,7 @@ export function onPlayHandler (){
                     isEnough: false,
                     isMore: false
                 };
+                updateData(cash);
                 dispatch(winGame(win_setState)); 
                 onDeletDib();  
                 alert('У Вас BlackJack!!!!!!!!!!!!!'); 
@@ -55,6 +76,7 @@ export function onPlayHandler (){
             
         }else if(playerHandSum > 21){
             setTimeout(()=>{
+                let cash = state.cash;
                 alert('Вы проиграли!!!!!!!');
                 onDeletDib();
                 const lose_setState = {
@@ -66,6 +88,7 @@ export function onPlayHandler (){
                     isEnough: false,
                     isMore: false
                 };
+                updateData(cash);
                 dispatch(loseGame(lose_setState));  
             }, 600);
             
@@ -97,6 +120,7 @@ export function onEnoughHandler(){
 
         if(dealerHandSum === 21){
             setTimeout(()=>{
+                let cash = state.cash;
                 const lose_setState = {
                     playerHandSum: 0,
                     bet: 0,
@@ -107,7 +131,8 @@ export function onEnoughHandler(){
                     isMore: false
                 }; 
                 dispatch(loseGame(lose_setState));
-                onDeletDib();  
+                onDeletDib(); 
+                updateData(cash); 
                 alert('У дилера BlackJack! Вы проиграли((((('); 
             }, 600); 
         }else if(dealerHandSum > 21 || state.playerHandSum > dealerHandSum){
@@ -125,6 +150,7 @@ export function onEnoughHandler(){
                 }; 
                 dispatch(winGame(win_setState));
                 onDeletDib();  
+                updateData(cash);
                 alert('Вы выграли!!!!!!!!!!!!!'); 
             }, 600);        
         }else if(dealerHandSum === state.playerHandSum){
@@ -142,10 +168,12 @@ export function onEnoughHandler(){
                 }; 
                 dispatch(drawGame(draw_setState));
                 onDeletDib();  
+                updateData(cash);
                 alert('Победила дружба!!!!!!!!!!!!!'); 
             }, 600); 
         }else{
             setTimeout(()=>{
+                let cash = state.cash;
                 alert('Вы проиграли!!!!!!!');
                 onDeletDib();
                 const lose_setState = {
@@ -157,17 +185,11 @@ export function onEnoughHandler(){
                     isEnough: false,
                     isMore: false
                 };
+                updateData(cash);
                 dispatch(loseGame(lose_setState));
             }, 600);
         }
-
-        // const deal_setState = {
-        //     dealerHand,
-        //     dealerHandSum,
-        //     isEnough: false,
-        //     isMore: false
-        // };
-        // dispatch(dealHand(deal_setState));
+        
     }
 }
 
@@ -200,11 +222,13 @@ export function onMoreHandler(){
                 };
                 dispatch(winGame(win_setState));
                 onDeletDib();  
+                updateData(cash);
                 alert('У Вас BlackJack!!!!!!!!!!!!!'); 
             }, 600);           
             
         }else if(playerHandSum > 21){
             setTimeout(()=>{
+                let cash = state.cash
                 alert('Вы проиграли!!!!!!!');
                 onDeletDib();
                 const lose_setState = {
@@ -216,6 +240,7 @@ export function onMoreHandler(){
                     isEnough: false,
                     isMore: false
                 };
+                updateData(cash);
                 dispatch(loseGame(lose_setState));  
             }, 600);
             
@@ -227,6 +252,13 @@ export function handSuccess(set_state){
     return{
         type: HAND_SUCCESS,
         ...set_state
+    }
+}
+
+export function dataUser(setStateUser){
+    return{
+        type: DATA_USER,
+        ...setStateUser
     }
 }
 
@@ -305,5 +337,24 @@ function getSum (hand){
 
 function onDeletDib() {
     return document.getElementById('dibsBet').innerHTML='';
-}    
+}
+
+
+async function updateData(cash){
+    const userUpdate = localStorage.getItem('userId');
+    const dataUpdate ={
+        userUpdate, cash
+    }
+    const respons = await axios.put('http://localhost:3001/playUser', dataUpdate);
+    console.log(respons);
+    // if(respons.data){
+    //     const setStateUser = {
+    //         cash: respons.data.bet,
+    //         name: respons.data.name
+    //     }
+    //     dispatch(dataUser(setStateUser));
+    // }
+
+}
+
 

@@ -4,17 +4,18 @@ import classes from './PlayTable.css'
 import Dibs from '../../components/Dibs/DIbs'
 import Rate from '../../components/Rate/Rate'
 import PlayButton from '../../components/UI/PlayButton/PlayButton'
+import Button from '../../components/UI/Button/Button'
 import DealerHand from '../../components/DealerHand/DealerHand'
 import PlayerHand from '../../components/PlayerHand/PlayerHand'
 import {fetchMakeBet, 
         onPlayHandler,
         onEnoughHandler,
-        onMoreHandler} from '../../store/actions/playTable'
+        onMoreHandler,
+        getDataUser} from '../../store/actions/playTable'
 
 class PlayTable extends Component {
     
-    
-    onCreateDibHandler = value =>{
+   onCreateDibHandler = value =>{
         let div = document.createElement('div');
         switch(value){
             case '1':
@@ -47,13 +48,20 @@ class PlayTable extends Component {
                 
     }
 
-    
+    componentDidMount(){
+        const userId = localStorage.getItem('userId');
+        this.props.getDataUser(userId);
+
+    }
+
+        
     render(){
         return(
             <div className={classes.PlayTable}>
                 <Rate 
                     bet={this.props.bet}
                     cash={this.props.cash}
+                    name={this.props.nameUser}
                 />
                 <DealerHand 
                     dealerHand={this.props.dealerHand}
@@ -75,7 +83,15 @@ class PlayTable extends Component {
                     disabledPlay={!this.props.isPlay}
                     disabledEnough={!this.props.isEnough}
                     disabledMore={!this.props.isMore}
-                />                
+                /> 
+                <div className={classes.Button}>
+                    <Button 
+                        type="success" 
+                    >Профиль</Button>           
+                    <Button 
+                        type="error"                        
+                    >Выход</Button>
+                </div>                   
             </div>
         )
     }
@@ -87,19 +103,23 @@ function mapStateToProps(state){
         dibs:state.playTable.dibs,
         bet: state.playTable.bet,
         cash: state.playTable.cash,
+        nameUser: state.playTable.nameUser,
         playerHand: state.playTable.playerHand,
         playerHandSum: state.playTable.playerHandSum,
         dealerHand: state.playTable.dealerHand,
         dealerHandSum: state.playTable.dealerHandSum,
         isPlay: state.playTable.isPlay,
         isEnough: state.playTable.isEnough,
-        isMore: state.playTable.isMore
+        isMore: state.playTable.isMore,
+        backProfile: state.playTable.backProfile,
+        isExit: state.playTable.isExit
     }
 }
 
 function mapDispatchToProps(dispatch){
     return{
         fetchMakeBet: (bet, cash, isPlay)=> dispatch(fetchMakeBet(bet, cash, isPlay)),
+        getDataUser: userId => dispatch(getDataUser(userId)),
         onPlayHandler: () => dispatch(onPlayHandler()),
         onEnoughHandler: () => dispatch(onEnoughHandler()),
         onMoreHandler: () => dispatch(onMoreHandler())

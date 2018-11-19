@@ -128,7 +128,7 @@ class Auth extends Component{
 	
 	render(){
 		if(this.state.isLogin){
-			return (<Redirect to='/profile' />);
+			return (<Redirect to='/profile' path/>);
 		}else{
 			return(
 				<div className={classes.Auth} >

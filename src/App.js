@@ -6,19 +6,19 @@ import Profile from './containers/Profile/Profile'
 import PlayTable from './containers/PlayTable/PlayTable'
 
 class App extends Component {
-  state = {
-    userId: ''
-  } 
+  // state = {
+  //   userId: ''
+  // } 
 
-  componentDidMount(){
-    const userId = localStorage.getItem('userId');
-    this.setState({
-      userId
-    })
-  }
+  // componentDidMount (){
+  //   const userId = localStorage.getItem('userId');
+  //   this.setState({
+  //     userId
+  //   })
+  // }
   render() {
    
-    if(this.state.userId){
+    // if(this.state.userId){
       return (
         <Switch>          
           <Route path="/registration" component={Registration} />
@@ -27,16 +27,16 @@ class App extends Component {
           <Route path="/" exact component={Auth} />
         </Switch>
       ); 
-    }else{
-      return (
-        <Switch>
-          <Route path="/registration" component={Registration} /> 
-          <Route path="/" exact component={Auth} />
+    // }else{
+    //   return (
+    //     <Switch>
+    //       <Route path="/registration" component={Registration} /> 
+    //       <Route path="/" exact component={Auth} />
           
-          <Redirect to="/" />         
-        </Switch>
-      ); 
-    }
+    //       <Redirect to="/" />         
+    //     </Switch>
+    //   ); 
+    // }
     
   }
 }

@@ -69,8 +69,11 @@ class Registration extends Component{
 			email: this.state.formControls.email.value,
 			password: this.state.formControls.password.value
 		};
+
+		console.log(dataAuth);
 				
 		const respons = await axios.post('http://localhost:3001/registration', dataAuth);
+		console.log(respons.data);
 		if(respons.data){
 			this.setState({
 				isRegistr: true
@@ -155,7 +158,7 @@ class Registration extends Component{
 
     render(){
 		if(this.state.isRegistr){
-			return (<Redirect to='/' />)
+			return (<Redirect to='/' path/>)
 		}else{
 			return(
 				<div className={classes.Registration} >

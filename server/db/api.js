@@ -15,11 +15,13 @@ exports.createUser = function(userData){
 		email: userData.email,
 		password: hash(userData.password)
 	}
+
+	console.log(user);
 	
 	return new User(user).save()
 		.then(()=>{
 			// function(err){
-				// mongoose.disconnect();
+				mongoose.disconnect();
 				console.log("User create");
 				// if(err) return console.log(err);
 			// }
@@ -28,12 +30,6 @@ exports.createUser = function(userData){
 		.catch(()=> {return false});
 }
 
-// exports.getUser = function(name) {
-	
-// 	return User.findOne(name).then((doc)=>{
-// 		return Promise.resolve(doc);
-// 	});
-// }
 
 exports.checkUser = function(userData) { 
 	return User
@@ -66,12 +62,12 @@ exports.checkUserId = function(userId) {
 		})
 }
 
-// exports.updateUser = function(data){
-// 	return User.findOneAndUpdate({name: data.user}, {bet: data.bet}, (err, result)=>{
-// 		if (err) throw err;
-// 		console.log(result);
-// 	});
-// }
+exports.updateUser = function(data){
+	return User.findOneAndUpdate({"_id": new objectId(data.userUpdate)}, {bet: data.cash}, (err, result)=>{
+		if (err) throw err;
+		console.log(result);
+	});
+}
 
 function hash(text) {
 	return crypto.createHash('sha1')
