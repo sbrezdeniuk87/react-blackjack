@@ -7,7 +7,6 @@ mongoose.connect("mongodb://localhost:27017/black_jack", { useNewUrlParser: true
 mongoose.set('useCreateIndex', true);
 
 
-// User API
 
 exports.createUser = function(userData){
 	let user = {
@@ -21,7 +20,7 @@ exports.createUser = function(userData){
 	return new User(user).save()
 		.then(()=>{
 			// function(err){
-				mongoose.disconnect();
+				// mongoose.disconnect();
 				console.log("User create");
 				// if(err) return console.log(err);
 			// }

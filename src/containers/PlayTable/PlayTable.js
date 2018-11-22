@@ -7,6 +7,7 @@ import PlayButton from '../../components/UI/PlayButton/PlayButton'
 import Button from '../../components/UI/Button/Button'
 import DealerHand from '../../components/DealerHand/DealerHand'
 import PlayerHand from '../../components/PlayerHand/PlayerHand'
+import {NavLink, Redirect} from 'react-router-dom'
 import {fetchMakeBet, 
         onPlayHandler,
         onEnoughHandler,
@@ -14,6 +15,10 @@ import {fetchMakeBet,
         getDataUser} from '../../store/actions/playTable'
 
 class PlayTable extends Component {
+
+    state = {
+        isLogout: false
+    }
     
    onCreateDibHandler = value =>{
         let div = document.createElement('div');
@@ -48,52 +53,72 @@ class PlayTable extends Component {
                 
     }
 
+    isLogout = () => {
+        localStorage.removeItem('userId');
+        this.setState({
+            isLogout: true
+        });
+    }
+
     componentDidMount(){
         const userId = localStorage.getItem('userId');
-        this.props.getDataUser(userId);
+        if(userId === null){
+            this.setState({
+                isLogout: true
+            });
+        }else{
+            this.props.getDataUser(userId);
+        }
+        
 
     }
 
         
     render(){
-        return(
-            <div className={classes.PlayTable}>
-                <Rate 
-                    bet={this.props.bet}
-                    cash={this.props.cash}
-                    name={this.props.nameUser}
-                />
-                <DealerHand 
-                    dealerHand={this.props.dealerHand}
-                    dealerHandSum={this.props.dealerHandSum}
-                />
-                <div id="dibsBet"></div>
-                <PlayerHand 
-                    playerHand={this.props.playerHand}
-                    playerHandSum={this.props.playerHandSum}
-                />
-                <Dibs 
-                    dibs={this.props.dibs}
-                    onDibCLick={this.onCreateDibHandler}
-                />
-                <PlayButton 
-                    onPlay={this.props.onPlayHandler}
-                    onEnough={this.props.onEnoughHandler}
-                    onMore={this.props.onMoreHandler}
-                    disabledPlay={!this.props.isPlay}
-                    disabledEnough={!this.props.isEnough}
-                    disabledMore={!this.props.isMore}
-                /> 
-                <div className={classes.Button}>
-                    <Button 
-                        type="success" 
-                    >Профиль</Button>           
-                    <Button 
-                        type="error"                        
-                    >Выход</Button>
-                </div>                   
-            </div>
-        )
+        if(this.state.isLogout){
+            return (<Redirect to='/' />)
+        }else{
+            return(
+                <div className={classes.PlayTable}>
+                    <Rate 
+                        bet={this.props.bet}
+                        cash={this.props.cash}
+                        name={this.props.nameUser}
+                    />
+                    <DealerHand 
+                        dealerHand={this.props.dealerHand}
+                        dealerHandSum={this.props.dealerHandSum}
+                    />
+                    <div id="dibsBet"></div>
+                    <PlayerHand 
+                        playerHand={this.props.playerHand}
+                        playerHandSum={this.props.playerHandSum}
+                    />
+                    <Dibs 
+                        dibs={this.props.dibs}
+                        onDibCLick={this.onCreateDibHandler}
+                    />
+                    <PlayButton 
+                        onPlay={this.props.onPlayHandler}
+                        onEnough={this.props.onEnoughHandler}
+                        onMore={this.props.onMoreHandler}
+                        disabledPlay={!this.props.isPlay}
+                        disabledEnough={!this.props.isEnough}
+                        disabledMore={!this.props.isMore}
+                    /> 
+                    <div className={classes.Button}>
+                    <NavLink to='/profile'>
+                        <Button type="success" >Профиль</Button>   
+                    </NavLink>                            
+                        <Button 
+                            type="error" 
+                            onClick={this.isLogout}                       
+                        >Выход</Button>
+                    </div>                   
+                </div>
+            )
+        }
+        
     }
 }
 

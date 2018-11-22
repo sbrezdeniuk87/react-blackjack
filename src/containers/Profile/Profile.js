@@ -21,7 +21,13 @@ class Profile extends Component{
 
     componentDidMount(){
         const userId = localStorage.getItem('userId');
-        this.getDataUser(userId);
+        if(userId === null){
+            this.setState({
+                isLogout: true
+            });
+        }else{
+            this.getDataUser(userId);
+        }        
 
     }
 
