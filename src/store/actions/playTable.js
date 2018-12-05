@@ -18,10 +18,10 @@ export function fetchMakeBet(bet, cash, isPlay){
     }
 }
 
-export function getDataUser(userId){
+export function getDataUser(userToken){
     return async dispatch =>{
         const data = {
-            userId: userId  
+            userToken: userToken  
         }
         const respons = await axios.post('http://localhost:3001/play', data);
         if(respons.data){
@@ -341,7 +341,7 @@ function onDeletDib() {
 
 
 async function updateData(cash){
-    const userUpdate = localStorage.getItem('userId');
+    const userUpdate = localStorage.getItem('userToken');
     const dataUpdate ={
         userUpdate, cash
     }

@@ -13,29 +13,32 @@ class Profile extends Component{
     }
 
     isLogout = () => {
-        localStorage.removeItem('userId');
+        localStorage.removeItem('userToken');
         this.setState({
             isLogout: true
         });
     }
 
     componentDidMount(){
-        const userId = localStorage.getItem('userId');
-        if(userId === null){
+        
+        const usertToken = localStorage.getItem('userToken');
+        
+        if(usertToken === null){
             this.setState({
                 isLogout: true
             });
         }else{
-            this.getDataUser(userId);
+            this.getDataUser(usertToken);
         }        
 
     }
 
-    getDataUser = async (userId)=>{
+    getDataUser = async (userToken)=>{
         const data = {
-            userId: userId  
+            userToken: userToken  
         }
         const respons = await axios.post('http://localhost:3001/profile', data);
+        console.log(respons.data);
         if(respons.data){
             this.setState({
                 bet: respons.data.bet,

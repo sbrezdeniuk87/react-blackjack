@@ -47,8 +47,9 @@ class Auth extends Component{
 		};
 		
 		const respons = await axios.post('http://localhost:3001/',dataAuth);
+		console.log(respons);
 		if(respons.data){
-			localStorage.setItem('userId', respons.data);			
+			localStorage.setItem('userToken', respons.data.token);		
 			this.setState({
 				isLogin: true
 			});

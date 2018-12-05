@@ -54,20 +54,20 @@ class PlayTable extends Component {
     }
 
     isLogout = () => {
-        localStorage.removeItem('userId');
+        localStorage.removeItem('userToken');
         this.setState({
             isLogout: true
         });
     }
 
     componentDidMount(){
-        const userId = localStorage.getItem('userId');
-        if(userId === null){
+        const userToken = localStorage.getItem('userToken');
+        if(userToken === null){
             this.setState({
                 isLogout: true
             });
         }else{
-            this.props.getDataUser(userId);
+            this.props.getDataUser(userToken);
         }
         
 
