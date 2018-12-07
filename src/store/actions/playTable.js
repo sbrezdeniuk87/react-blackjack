@@ -7,8 +7,8 @@ import {FETCH_PLAY_START,
         DEAL_HAND,
         PLAY_HAND,
         DATA_USER} from './actionType'
-// import socketIOClient from "socket.io-client"
 import axios from 'axios'
+
 
 
 export function fetchMakeBet(bet, cash, isPlay){
@@ -24,6 +24,7 @@ export function getDataUser(userToken){
             userToken: userToken  
         }
         const respons = await axios.post('http://localhost:3001/play', data);
+        
         if(respons.data){
             const setStateUser = {
                 cash: respons.data.bet,
@@ -39,13 +40,21 @@ export function onPlayHandler (){
     return async (dispatch, getState) => {
         const state = getState().playTable;
         let playerHand = await [getCard(state), getCard(state)];
+        let OpponetFirstHand = await [getCard(state), getCard(state)];
+        let OpponentSecondHand = await [getCard(state), getCard(state)];
         let dealerHand = await [getCard(state)];
         let playerHandSum = await getSum(playerHand);
-        let dealerHandSum = await getSum(dealerHand);
+        let OpponetFirstHandSum = await getSum(OpponetFirstHand);
+        let dealerHandSum = await getSum(dealerHand); 
+        let OpponentSecondHandSum = await getSum(OpponentSecondHand);   
 
         const set_state = {
             playerHand,
             playerHandSum,
+            OpponetFirstHand,
+            OpponetFirstHandSum,
+            OpponentSecondHand,
+            OpponentSecondHandSum,
             dealerHand,
             dealerHandSum,
             isPlay: false,
@@ -65,6 +74,10 @@ export function onPlayHandler (){
                     cash,
                     playerHand:[],
                     dealerHand:[],
+                    OpponetFirstHand: [],
+                    OpponetFirstHandSum: 0,
+                    OpponentSecondHand: [],
+                    OpponentSecondHandSum: 0,
                     isEnough: false,
                     isMore: false
                 };
@@ -85,6 +98,10 @@ export function onPlayHandler (){
                     dealerHandSum: 0,
                     playerHand:[],
                     dealerHand:[],
+                    OpponetFirstHand: [],
+                    OpponetFirstHandSum: 0,
+                    OpponentSecondHand: [],
+                    OpponentSecondHandSum: 0,
                     isEnough: false,
                     isMore: false
                 };
@@ -127,6 +144,10 @@ export function onEnoughHandler(){
                     dealerHandSum: 0,
                     playerHand:[],
                     dealerHand:[],
+                    OpponetFirstHand: [],
+                    OpponetFirstHandSum: 0,
+                    OpponentSecondHand: [],
+                    OpponentSecondHandSum: 0,
                     isEnough: false,
                     isMore: false
                 }; 
@@ -145,6 +166,10 @@ export function onEnoughHandler(){
                     cash,
                     playerHand:[],
                     dealerHand:[],
+                    OpponetFirstHand: [],
+                    OpponetFirstHandSum: 0,
+                    OpponentSecondHand: [],
+                    OpponentSecondHandSum: 0,
                     isEnough: false,
                     isMore: false
                 }; 
@@ -163,6 +188,10 @@ export function onEnoughHandler(){
                     cash,
                     playerHand:[],
                     dealerHand:[],
+                    OpponetFirstHand: [],
+                    OpponetFirstHandSum: 0,
+                    OpponentSecondHand: [],     
+                    OpponentSecondHandSum: 0,  
                     isEnough: false,
                     isMore: false
                 }; 
@@ -182,6 +211,10 @@ export function onEnoughHandler(){
                     dealerHandSum: 0,
                     playerHand:[],
                     dealerHand:[],
+                    OpponetFirstHand: [],
+                    OpponetFirstHandSum: 0,
+                    OpponentSecondHand: [],
+                    OpponentSecondHandSum: 0,
                     isEnough: false,
                     isMore: false
                 };
@@ -217,6 +250,10 @@ export function onMoreHandler(){
                     cash,
                     playerHand:[],
                     dealerHand:[],
+                    OpponetFirstHand: [],
+                    OpponetFirstHandSum: 0,
+                    OpponentSecondHand: [],
+                    OpponentSecondHandSum: 0,
                     isEnough: false,
                     isMore: false
                 };
@@ -237,6 +274,10 @@ export function onMoreHandler(){
                     dealerHandSum: 0,
                     playerHand:[],
                     dealerHand:[],
+                    OpponetFirstHand: [],
+                    OpponetFirstHandSum: 0,
+                    OpponentSecondHand: [],
+                    OpponentSecondHandSum: 0,
                     isEnough: false,
                     isMore: false
                 };

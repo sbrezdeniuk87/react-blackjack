@@ -1,11 +1,13 @@
 
 const express = require('express');
 const app = express();
+const server = require('http').createServer(app);
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
-const server = require('http').createServer(app);
-const path = require('path');
+const  io  =  require('socket.io')(server);
+
+// const path = require('path');
 
 
 const api = require('./db/api.js');
@@ -141,14 +143,20 @@ app.use((error, req, res, next)=>{
 	res.send('Error 500 server not work!');
 	next();
 });
- 
 
 
-app.listen(3001,()=>{
+io.on('connection', (client) => {
+    console.log("New client has connected with id:",client.id);
+    // client.emit("bet", 'Welcome in the socketId - '+ client.id);
+    client.on("new_player",(serverData)=>{
+        client.broadcast.emit('create-player',serverData);
+        console.log('new_client: ', serverData );
+      });
+});
+
+
+
+server.listen(3001,()=>{
     console.log("Listened 3001");
 });
 
-// function setToken(userId){
-//     const token = jwt.sing
-
-// }

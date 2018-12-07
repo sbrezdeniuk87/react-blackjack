@@ -3,6 +3,12 @@ import classes from './Profile.css'
 import {NavLink, Redirect} from 'react-router-dom'
 import Button from '../../components/UI/Button/Button'
 import axios from 'axios';
+import openSocket from 'socket.io-client';
+const socket = openSocket('http://localhost:3001');
+socket.on("create-player", serverData=>{
+    console.log(serverData);
+});
+
 
 class Profile extends Component{
     state = {
@@ -22,13 +28,16 @@ class Profile extends Component{
     componentDidMount(){
         
         const usertToken = localStorage.getItem('userToken');
-        
+       
+		 
         if(usertToken === null){
             this.setState({
                 isLogout: true
             });
         }else{
             this.getDataUser(usertToken);
+            
+            
         }        
 
     }
@@ -38,8 +47,10 @@ class Profile extends Component{
             userToken: userToken  
         }
         const respons = await axios.post('http://localhost:3001/profile', data);
-        console.log(respons.data);
+        
+                
         if(respons.data){
+             socket.emit("new_player", 'Connect new player');
             this.setState({
                 bet: respons.data.bet,
                 name: respons.data.name,

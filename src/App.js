@@ -5,6 +5,7 @@ import Registration from './containers/Registration/Registration'
 import Profile from './containers/Profile/Profile'
 import PlayTable from './containers/PlayTable/PlayTable'
 
+
 class App extends Component {
   
   render() {

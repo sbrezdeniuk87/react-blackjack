@@ -5,7 +5,8 @@ import Button from '../../components/UI/Button/Button'
 import {NavLink, Redirect} from 'react-router-dom'
 import is from 'is_js'
 import axios from 'axios';
-
+// import openSocket from 'socket.io-client';
+// const socket = openSocket('http://localhost:3001');
 
 class Auth extends Component{
 	
@@ -47,6 +48,7 @@ class Auth extends Component{
 		};
 		
 		const respons = await axios.post('http://localhost:3001/',dataAuth);
+		
 		console.log(respons);
 		if(respons.data){
 			localStorage.setItem('userToken', respons.data.token);		
@@ -85,6 +87,19 @@ class Auth extends Component{
 
 		return isValid
 	}
+
+	componentDidMount(){
+		// socket.on("bet",(serverData)=>{
+		// 	console.log(serverData);
+		//   });
+		// socket.emit('result', 'Hellow from client');
+	}
+
+	// componentDidUpdate(){
+	// 	socket.on("bet",(serverData)=>{
+	// 		console.log(serverData);
+	// 	  });
+	// }
 
 	onChangeHandler = (event, controlName)=>{
 		const formControls = {...this.state.formControls}

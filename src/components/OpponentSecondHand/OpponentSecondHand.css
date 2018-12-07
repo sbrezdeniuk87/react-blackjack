@@ -1,11 +1,13 @@
-.PlayerHand{
+.OpponentSecondHand{
     position: absolute;
-	bottom: 250px;
+    top: 310px;
+    right: 200px;
 	height: 150px;
-	padding: 0;
+    padding: 0;
+    transform: rotate(-90deg);
 }
 
-.PlayerHand  p{
+.OpponentSecondHand  p{
 	float: left;
 	width: 23px;
 	height: 20px;
