@@ -4,53 +4,68 @@ import {NavLink, Redirect} from 'react-router-dom'
 import Button from '../../components/UI/Button/Button'
 import axios from 'axios';
 import openSocket from 'socket.io-client';
+
 const socket = openSocket('http://localhost:3001');
-socket.on("create-player", serverData=>{
-    console.log(serverData);
-});
+
+
+
 
 
 class Profile extends Component{
     state = {
         isLogout: false,
+        role: undefined,
         bet: '',
         name: '',
         email: ''
     }
+
+    
 
     isLogout = () => {
         localStorage.removeItem('userToken');
         this.setState({
             isLogout: true
         });
+        socket.disconnect();
     }
 
-    componentDidMount(){
+    chooseRole = () =>{
+        let result;
+
+        result = window.confirm('Привет '+ this.state.name +'! Вы хотите быть Дилером?');
         
-        const usertToken = localStorage.getItem('userToken');
-       
+               
+        socket.emit('choose_role', result);
+        
+    }
+
+    componentDidMount(){        
+        const usertToken = localStorage.getItem('userToken');       
 		 
         if(usertToken === null){
             this.setState({
                 isLogout: true
             });
         }else{
-            this.getDataUser(usertToken);
-            
-            
-        }        
-
+            socket.on("create-player", serverData=>{
+                console.log('New player '+serverData);
+            });
+            console.log(socket.on("create-player", serverData=>{
+                return serverData;
+            }));
+            this.getDataUser(usertToken);            
+        }   
     }
 
     getDataUser = async (userToken)=>{
         const data = {
             userToken: userToken  
         }
-        const respons = await axios.post('http://localhost:3001/profile', data);
-        
+        const respons = await axios.post('http://localhost:3001/profile', data);        
                 
         if(respons.data){
-             socket.emit("new_player", 'Connect new player');
+            socket.emit("new_player", respons.data);
             this.setState({
                 bet: respons.data.bet,
                 name: respons.data.name,
@@ -78,6 +93,7 @@ class Profile extends Component{
                             <NavLink to="/play">
                                 <Button 
                                     type="success" 
+                                    onClick={this.chooseRole}
                                 >Играть</Button>
                             </NavLink>                        
                             <Button 

@@ -12,7 +12,7 @@ const  io  =  require('socket.io')(server);
 
 const api = require('./db/api.js');
 const secrekeyJWT = 'pvpnCCZfwOF85pBjbOebZiYIDhZ3w9LZrKwBZ7152K89mPCOHtbRlmr5Z91ci4L';
-
+const players = {};
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -87,7 +87,7 @@ app.post('/profile', async (req, res)=> {
     api.checkUserId(userToken.userId)
 			.then((doc)=>{
 				if(doc){
-                    console.log('Play', doc);
+                   
 					res.send(doc);				
 				} else {
                     console.log("User error ");
@@ -145,13 +145,35 @@ app.use((error, req, res, next)=>{
 });
 
 
+
 io.on('connection', (client) => {
-    console.log("New client has connected with id:",client.id);
+    console.log("New client has connected with id:", client.id);
     // client.emit("bet", 'Welcome in the socketId - '+ client.id);
+    
     client.on("new_player",(serverData)=>{
-        client.broadcast.emit('create-player',serverData);
-        console.log('new_client: ', serverData );
-      });
+        players[client.id] = {'name': serverData.name};
+        client.broadcast.emit('create-player',players[client.id].name);
+        console.log('new_client: ', players );
+    });
+    client.on('choose_role', result =>{
+        players[client.id] = {...players[client.id],'role': result};
+        console.log('choose_role', players);
+        client.emit('players', players);
+        console.log('players Emit', players);
+    });
+    // client.on('check_role', playerName => {
+    //     console.log('playerName', playerName);
+    //     players[client.id] === client.id ? client.emit('check_role', true) : client.emit('check_role', false); 
+    // });
+    client.on('disconnect', function(){
+        delete players[client.id];
+        console.log('After delet ', players);
+    });
+    
+
+   
+    
+    
 });
 
 

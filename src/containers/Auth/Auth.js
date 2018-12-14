@@ -5,8 +5,6 @@ import Button from '../../components/UI/Button/Button'
 import {NavLink, Redirect} from 'react-router-dom'
 import is from 'is_js'
 import axios from 'axios';
-// import openSocket from 'socket.io-client';
-// const socket = openSocket('http://localhost:3001');
 
 class Auth extends Component{
 	

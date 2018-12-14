@@ -7,6 +7,12 @@ import {FETCH_PLAY_START,
         DEAL_HAND,
         PLAY_HAND,
         DATA_USER} from '../actions/actionType'
+// import openSocket from 'socket.io-client';
+// const socket = openSocket('http://localhost:3001');
+
+// socket.on('players', serverData=>{
+//     console.log('playersRedux', serverData);                          
+// }); 
 
 const initialState = {
     deck: [
@@ -306,10 +312,6 @@ const initialState = {
     bet: 0,
     cash: 0,
     nameUser: '',
-    OpponetFirstHand: [],
-    OpponetFirstHandSum: 0,
-    OpponentSecondHand:[],
-    OpponentSecondHandSum: 0,
     playerHand: [],
     playerHandSum: 0,
     dealerHand: [],
@@ -347,10 +349,6 @@ export default function playReducer(state = initialState, action){
                 playerHandSum: action.playerHandSum,
                 dealerHand: action.dealerHand,
                 dealerHandSum: action.dealerHandSum,
-                OpponetFirstHand: action.OpponetFirstHand,
-                OpponetFirstHandSum: action.OpponetFirstHandSum,
-                OpponentSecondHand: action.OpponentSecondHand,
-                OpponentSecondHandSum: action.OpponentSecondHandSum,
                 isPlay: false,
                 isEnough: true,
                 isMore: true
@@ -364,10 +362,6 @@ export default function playReducer(state = initialState, action){
                 cash: action.cash,
                 playerHand: action.playerHand,
                 dealerHand: action.dealerHand,
-                OpponetFirstHand: action.OpponetFirstHand,
-                OpponetFirstHandSum: action.OpponetFirstHandSum,
-                OpponentSecondHand: action.OpponentSecondHand,
-                OpponentSecondHandSum: action.OpponentSecondHandSum,
                 isEnough: false,
                 isMore: false
             }
@@ -379,10 +373,6 @@ export default function playReducer(state = initialState, action){
                 dealerHandSum: action.dealerHandSum,
                 playerHand: action.playerHand,
                 dealerHand: action.dealerHand,
-                OpponetFirstHand: action.OpponetFirstHand,
-                OpponetFirstHandSum: action.OpponetFirstHandSum,
-                OpponentSecondHand: action.OpponentSecondHand,
-                OpponentSecondHandSum: action.OpponentSecondHandSum,
                 isEnough: false,
                 isMore: false
             }
@@ -395,10 +385,6 @@ export default function playReducer(state = initialState, action){
                 cash: action.cash,
                 playerHand: action.playerHand,
                 dealerHand: action.dealerHand,
-                OpponetFirstHand: action.OpponetFirstHand,
-                OpponetFirstHandSum: action.OpponetFirstHandSum,
-                OpponentSecondHand: action.OpponentSecondHand,
-                OpponentSecondHandSum: action.OpponentSecondHandSum,
                 isEnough: false,
                 isMore: false
             }

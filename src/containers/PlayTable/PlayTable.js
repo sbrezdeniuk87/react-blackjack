@@ -7,15 +7,15 @@ import PlayButton from '../../components/UI/PlayButton/PlayButton'
 import Button from '../../components/UI/Button/Button'
 import DealerHand from '../../components/DealerHand/DealerHand'
 import PlayerHand from '../../components/PlayerHand/PlayerHand'
-import OpponetFirstHand from '../../components/OpponetFirstHand/OpponetFirstHand'
-import OpponentSecondHand from '../../components/OpponentSecondHand/OpponentSecondHand'
 import {NavLink, Redirect} from 'react-router-dom'
 import {fetchMakeBet, 
         onPlayHandler,
         onEnoughHandler,
         onMoreHandler,
-        getDataUser} from '../../store/actions/playTable'
+        getDataUser} from '../../store/actions/playTable';
+import openSocket from 'socket.io-client';
 
+const socket = openSocket('http://localhost:3001/play');
 
 class PlayTable extends Component {
 
@@ -61,6 +61,8 @@ class PlayTable extends Component {
         this.setState({
             isLogout: true
         });
+
+        // socket.disconnect();
     }
 
     componentDidMount(){
@@ -70,8 +72,12 @@ class PlayTable extends Component {
             this.setState({
                 isLogout: true
             });
-        }else{
+        }else{                      
             this.props.getDataUser(userToken);
+            console.log(socket.on('players', serverData=>{
+                return serverData;               
+            }));
+            
         }
         
 
@@ -93,15 +99,7 @@ class PlayTable extends Component {
                         dealerHand={this.props.dealerHand}
                         dealerHandSum={this.props.dealerHandSum}
                     />
-                    <OpponetFirstHand 
-                        OpponetFirstHand={this.props.OpponetFirstHand}
-                        OpponetFirstHandSum={this.props.OpponetFirstHandSum}
-                    />
                     <div id="dibsBet"></div>
-                    <OpponentSecondHand 
-                        OpponentSecondHand={this.props.OpponentSecondHand}
-                        OpponentSecondHandSum={this.props.OpponentSecondHandSum}
-                    />
                     <PlayerHand 
                         playerHand={this.props.playerHand}
                         playerHandSum={this.props.playerHandSum}
@@ -141,10 +139,6 @@ function mapStateToProps(state){
         bet: state.playTable.bet,
         cash: state.playTable.cash,
         nameUser: state.playTable.nameUser,
-        OpponetFirstHand: state.playTable.OpponetFirstHand,
-        OpponetFirstHandSum: state.playTable.OpponetFirstHandSum,
-        OpponentSecondHand: state.playTable.OpponentSecondHand,
-        OpponentSecondHandSum: state.playTable.OpponentSecondHandSum,
         playerHand: state.playTable.playerHand,
         playerHandSum: state.playTable.playerHandSum,
         dealerHand: state.playTable.dealerHand,
