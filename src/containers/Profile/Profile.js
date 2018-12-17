@@ -1,11 +1,13 @@
 import React, {Component} from 'react'
+import {connect} from 'react-redux'
 import classes from './Profile.css'
 import {NavLink, Redirect} from 'react-router-dom'
 import Button from '../../components/UI/Button/Button'
-import axios from 'axios';
-import openSocket from 'socket.io-client';
+// import axios from 'axios';
+import {getDataUser, chooseRoleHandler} from '../../store/actions/profile';
 
-const socket = openSocket('http://localhost:3001');
+// import openSocket from 'socket.io-client';
+// const socket = openSocket('http://localhost:3001');
 
 
 
@@ -13,11 +15,7 @@ const socket = openSocket('http://localhost:3001');
 
 class Profile extends Component{
     state = {
-        isLogout: false,
-        role: undefined,
-        bet: '',
-        name: '',
-        email: ''
+        isLogout: false
     }
 
     
@@ -27,54 +25,22 @@ class Profile extends Component{
         this.setState({
             isLogout: true
         });
-        socket.disconnect();
-    }
-
-    chooseRole = () =>{
-        let result;
-
-        result = window.confirm('Привет '+ this.state.name +'! Вы хотите быть Дилером?');
-        
-               
-        socket.emit('choose_role', result);
-        
+        // socket.disconnect();
     }
 
     componentDidMount(){        
-        const usertToken = localStorage.getItem('userToken');       
+        const userToken = localStorage.getItem('userToken');       
 		 
-        if(usertToken === null){
+        if(userToken === null){
             this.setState({
                 isLogout: true
             });
-        }else{
-            socket.on("create-player", serverData=>{
-                console.log('New player '+serverData);
-            });
-            console.log(socket.on("create-player", serverData=>{
-                return serverData;
-            }));
-            this.getDataUser(usertToken);            
+        }else{      
+            this.props.getDataUser(userToken);           
         }   
     }
 
-    getDataUser = async (userToken)=>{
-        const data = {
-            userToken: userToken  
-        }
-        const respons = await axios.post('http://localhost:3001/profile', data);        
-                
-        if(respons.data){
-            socket.emit("new_player", respons.data);
-            this.setState({
-                bet: respons.data.bet,
-                name: respons.data.name,
-                email: respons.data.email
-            })
-        }
-    }
-
-
+   
     render(){
         if(this.state.isLogout){
             return (<Redirect to='/' />)
@@ -82,18 +48,18 @@ class Profile extends Component{
             return(
                 <div className={classes.Profile}>
                     <div>
-                        <h1>{this.state.name}</h1>
+                        <h1>{this.props.name}</h1>
                         <hr />
                         <p>
-                            <b>Почта: </b><em>{this.state.email}</em><br />
-                            <b>Счет: </b><em>{this.state.bet}</em><br />
+                            <b>Почта: </b><em>{this.props.email}</em><br />
+                            <b>Счет: </b><em>{this.props.cash}</em><br />
                         </p>
                         <hr />
                         <div className={classes.Buttons}>
                             <NavLink to="/play">
                                 <Button 
                                     type="success" 
-                                    onClick={this.chooseRole}
+                                    onClick={this.props.chooseRoleHandler}
                                 >Играть</Button>
                             </NavLink>                        
                             <Button 
@@ -109,4 +75,20 @@ class Profile extends Component{
     }
 }
 
-export default Profile
+function mapStateToProps(state){
+    console.log('state', state);
+    return{
+        cash: state.profile.cash,
+        name: state.profile.name,
+        email: state.profile.email
+    }
+}
+
+function mapDispatchToProps(dispatch){
+    return{
+        getDataUser: userToken => dispatch(getDataUser(userToken)),
+        chooseRoleHandler: ()=>dispatch(chooseRoleHandler())
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile)

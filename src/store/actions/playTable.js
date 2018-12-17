@@ -1,19 +1,12 @@
-import {FETCH_PLAY_START,
+import {FETCH_SUCCESS,
         FETCH_MAKE_BET,
         HAND_SUCCESS,
         WIN_GAME,
         LOSE_GAME,
         DRAW_GAME,
         DEAL_HAND,
-        PLAY_HAND,
-        DATA_USER} from './actionType'
+        PLAY_HAND} from './actionType'
 import axios from 'axios'
-// import openSocket from 'socket.io-client';
-// const socket = openSocket('http://localhost:3001');
-
-// socket.on('players', serverData=>{
-//     console.log('playersRedux', serverData);                          
-// }); 
 
 
 
@@ -24,23 +17,6 @@ export function fetchMakeBet(bet, cash, isPlay){
     }
 }
 
-export function getDataUser(userToken){
-    return async dispatch =>{
-        const data = {
-            userToken: userToken  
-        }
-        const respons = await axios.post('http://localhost:3001/play', data);
-        
-        if(respons.data){
-            const setStateUser = {
-                cash: respons.data.bet,
-                name: respons.data.name
-            }
-            dispatch(dataUser(setStateUser));
-        }
-    }
-       
-}
 
 export function onPlayHandler (){
     return async (dispatch, getState) => {
@@ -262,12 +238,6 @@ export function handSuccess(set_state){
     }
 }
 
-export function dataUser(setStateUser){
-    return{
-        type: DATA_USER,
-        ...setStateUser
-    }
-}
 
 export function dealHand(deal_setState){
     return{
@@ -304,9 +274,9 @@ export function drawGame(draw_setState){
     }
 }
 
-export function fetchPlayStart(){
+export function fetchPlaySuccess(){
     return{
-        type: FETCH_PLAY_START
+        type: FETCH_SUCCESS
     }
 }
 

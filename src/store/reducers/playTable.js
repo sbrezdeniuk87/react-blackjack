@@ -1,19 +1,18 @@
-import {FETCH_PLAY_START,
+import {FETCH_SUCCESS,
         FETCH_MAKE_BET,
         HAND_SUCCESS,
         WIN_GAME,
         LOSE_GAME,
         DRAW_GAME,
         DEAL_HAND,
-        PLAY_HAND,
-        DATA_USER} from '../actions/actionType'
+        PLAY_HAND} from '../actions/actionType'
 // import openSocket from 'socket.io-client';
 // const socket = openSocket('http://localhost:3001');
 
 // socket.on('players', serverData=>{
 //     console.log('playersRedux', serverData);                          
 // }); 
-
+ 
 const initialState = {
     deck: [
         {
@@ -310,8 +309,6 @@ const initialState = {
         }
     ],
     bet: 0,
-    cash: 0,
-    nameUser: '',
     playerHand: [],
     playerHandSum: 0,
     dealerHand: [],
@@ -325,16 +322,10 @@ const initialState = {
 
 export default function playReducer(state = initialState, action){
     switch(action.type){
-        case FETCH_PLAY_START:
+        case FETCH_SUCCESS:
             return{
                 ...state
-            }
-        case DATA_USER:
-            return{
-                ...state,
-                cash: action.cash,
-                nameUser: action.name
-            }
+            }        
         case FETCH_MAKE_BET:
             return{
                 ...state, 

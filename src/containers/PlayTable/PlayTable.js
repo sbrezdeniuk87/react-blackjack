@@ -11,11 +11,11 @@ import {NavLink, Redirect} from 'react-router-dom'
 import {fetchMakeBet, 
         onPlayHandler,
         onEnoughHandler,
-        onMoreHandler,
-        getDataUser} from '../../store/actions/playTable';
-import openSocket from 'socket.io-client';
+        onMoreHandler} from '../../store/actions/playTable';
+import {getDataUser} from '../../store/actions/profile';
+// import openSocket from 'socket.io-client';
 
-const socket = openSocket('http://localhost:3001/play');
+// const socket = openSocket('http://localhost:3001/play');
 
 class PlayTable extends Component {
 
@@ -74,9 +74,9 @@ class PlayTable extends Component {
             });
         }else{                      
             this.props.getDataUser(userToken);
-            console.log(socket.on('players', serverData=>{
-                return serverData;               
-            }));
+            // console.log(socket.on('players', serverData=>{
+            //     return serverData;               
+            // }));
             
         }
         
@@ -133,12 +133,13 @@ class PlayTable extends Component {
 }
 
 function mapStateToProps(state){
+    console.log('state', state);
     return{
         deck: state.playTable.deck,
         dibs:state.playTable.dibs,
         bet: state.playTable.bet,
-        cash: state.playTable.cash,
-        nameUser: state.playTable.nameUser,
+        cash: state.profile.cash,
+        nameUser: state.profile.name,
         playerHand: state.playTable.playerHand,
         playerHandSum: state.playTable.playerHandSum,
         dealerHand: state.playTable.dealerHand,
@@ -154,7 +155,7 @@ function mapStateToProps(state){
 function mapDispatchToProps(dispatch){
     return{
         fetchMakeBet: (bet, cash, isPlay)=> dispatch(fetchMakeBet(bet, cash, isPlay)),
-        getDataUser: userId => dispatch(getDataUser(userId)),
+        getDataUser: userToken => dispatch(getDataUser(userToken)),
         onPlayHandler: () => dispatch(onPlayHandler()),
         onEnoughHandler: () => dispatch(onEnoughHandler()),
         onMoreHandler: () => dispatch(onMoreHandler())
