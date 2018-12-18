@@ -28,7 +28,7 @@ export function getDataUser(userToken){
             userToken: userToken  
         }
         const respons = await axios.post('http://localhost:3001/profile', data);
-        
+        console.log(respons.data)
         if(respons.data){
             const setStateUser = {
                 cash: respons.data.bet,

@@ -4,7 +4,8 @@ const initialState = {
     cash: '',
     name: '',
     email: '',
-    role: null
+    role: null,
+    loading: true
 }
 
 export default function profileReducer(state = initialState, action){
@@ -18,7 +19,8 @@ export default function profileReducer(state = initialState, action){
                 ...state,
                 cash: action.cash,
                 name: action.name,
-                email: action.email
+                email: action.email,
+                loading: false
             }
         case SET_ROLE:
             return{

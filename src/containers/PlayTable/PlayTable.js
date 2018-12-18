@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import classes from './PlayTable.css'
 import Dibs from '../../components/Dibs/DIbs'
 import Rate from '../../components/Rate/Rate'
+import RateDiler from '../../components/RateDiler/RateDiler'
 import PlayButton from '../../components/UI/PlayButton/PlayButton'
 import Button from '../../components/UI/Button/Button'
 import DealerHand from '../../components/DealerHand/DealerHand'
@@ -12,15 +13,17 @@ import {fetchMakeBet,
         onPlayHandler,
         onEnoughHandler,
         onMoreHandler} from '../../store/actions/playTable';
-import {getDataUser} from '../../store/actions/profile';
-// import openSocket from 'socket.io-client';
+// import {getDataUser} from '../../store/actions/profile';
+import openSocket from 'socket.io-client';
 
-// const socket = openSocket('http://localhost:3001/play');
+const socket = openSocket('http://localhost:3001');
 
 class PlayTable extends Component {
 
     state = {
-        isLogout: false
+        isLogout: false,
+        opponentName: '',
+        opponentCash: ''
     }
     
    onCreateDibHandler = value =>{
@@ -62,7 +65,7 @@ class PlayTable extends Component {
             isLogout: true
         });
 
-        // socket.disconnect();
+        socket.disconnect();
     }
 
     componentDidMount(){
@@ -73,13 +76,24 @@ class PlayTable extends Component {
                 isLogout: true
             });
         }else{                      
-            this.props.getDataUser(userToken);
-            // console.log(socket.on('players', serverData=>{
-            //     return serverData;               
-            // }));
+            // this.props.getDataUser(userToken);
+            let serverdataUser = {
+                name: this.props.nameUser,
+                cash: this.props.cash
+            }
+            socket.emit('new_player', serverdataUser);
+            socket.on('create-player', serverData=>{
+                console.log('New player', serverData);
+                this.setState({
+                    opponentName: serverData.name,
+                    opponentCash: serverData.cash
+                })
+            })
+            // socket.on('players', serverData=>{
+            //    console.log('players', serverData);               
+            // });
             
-        }
-        
+        }       
 
     }
 
@@ -87,9 +101,54 @@ class PlayTable extends Component {
     render(){
         if(this.state.isLogout){
             return (<Redirect to='/' />)
+        }else if(this.props.role){
+            return(
+                <div className={classes.PlayTable}>
+                    <Rate 
+                        cash={this.state.opponentCash}
+                        name={this.state.opponentName}
+                    />
+                    <RateDiler 
+                        bet={this.props.bet}
+                        cash={this.props.cash}
+                        name={this.props.nameUser}
+                    />
+                    <DealerHand 
+                        dealerHand={this.props.dealerHand}
+                        dealerHandSum={this.props.dealerHandSum}
+                    />
+                    <div id="dibsBet"></div>
+                    <PlayerHand 
+                        playerHand={this.props.playerHand}
+                        playerHandSum={this.props.playerHandSum}
+                    />
+                    
+                    <PlayButton 
+                        onPlay={this.props.onPlayHandler}
+                        onEnough={this.props.onEnoughHandler}
+                        onMore={this.props.onMoreHandler}
+                        disabledPlay={!this.props.isPlay}
+                        disabledEnough={!this.props.isEnough}
+                        disabledMore={!this.props.isMore}
+                    /> 
+                    <div className={classes.Button}>
+                    <NavLink to='/profile'>
+                        <Button type="success" >Профиль</Button>   
+                    </NavLink>                            
+                        <Button 
+                            type="error" 
+                            onClick={this.isLogout}                       
+                        >Выход</Button>
+                    </div>                   
+                </div>
+            )
         }else{
             return(
                 <div className={classes.PlayTable}>
+                    <RateDiler 
+                        cash={this.state.opponentCash}
+                        name={this.state.opponentName}
+                    />
                     <Rate 
                         bet={this.props.bet}
                         cash={this.props.cash}
@@ -133,7 +192,7 @@ class PlayTable extends Component {
 }
 
 function mapStateToProps(state){
-    console.log('state', state);
+    console.log(state);
     return{
         deck: state.playTable.deck,
         dibs:state.playTable.dibs,
@@ -148,14 +207,15 @@ function mapStateToProps(state){
         isEnough: state.playTable.isEnough,
         isMore: state.playTable.isMore,
         backProfile: state.playTable.backProfile,
-        isExit: state.playTable.isExit
+        isExit: state.playTable.isExit,
+        role: state.profile.role
     }
 }
 
 function mapDispatchToProps(dispatch){
     return{
         fetchMakeBet: (bet, cash, isPlay)=> dispatch(fetchMakeBet(bet, cash, isPlay)),
-        getDataUser: userToken => dispatch(getDataUser(userToken)),
+        // getDataUser: userToken => dispatch(getDataUser(userToken)),
         onPlayHandler: () => dispatch(onPlayHandler()),
         onEnoughHandler: () => dispatch(onEnoughHandler()),
         onMoreHandler: () => dispatch(onMoreHandler())
