@@ -18,3 +18,24 @@
 	font-weight: 600;
 	text-align: center;
 }
+
+.PlayerHandTrue{
+    position: absolute;
+	top: 90px;
+	height: 175px;
+	padding: 0;
+}
+
+.PlayerHandTrue > p{
+	float: left;
+	width: 23px;
+	height: 20px;
+	line-height: 20px;
+	text-align: center;
+	margin-right: 3px;
+	margin-top: 0;
+	color: #000;
+	background-color: #fff;
+	font-size: 1.1em;
+	font-weight: 600;
+} 

@@ -17,4 +17,25 @@
 	background-color: #fff;
 	font-size: 1.1em;
 	font-weight: 600;
+} 
+
+.DealerHandTrue{
+    position: absolute;
+	bottom: 250px;
+	height: 150px;
+	padding: 0;
+}
+
+.DealerHandTrue  p{
+	float: left;
+	width: 23px;
+	height: 20px;
+	line-height: 20px;
+	margin-right: 3px;
+	margin-top: 0;
+	color: #000;
+	background-color: #fff;
+	font-size: 1.1em;
+	font-weight: 600;
+	text-align: center;
 }

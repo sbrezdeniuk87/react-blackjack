@@ -5,16 +5,23 @@ const PlayButton = props =>(
     <div className={classes.PlayButton}> 
           <button className={classes.btn}
             disabled={props.disabledPlay}
-            onClick={()=> props.onPlay()}
+            onClick={()=> props.onPlay('Play')}
           >Play</button>
           <button className={classes.btn}
             disabled={props.disabledEnough}
-            onClick={()=>props.onEnough()}
+            onClick={()=>props.onEnough('Enough')}
           >Enough</button>
           <button className={classes.btn}
             disabled={props.disabledMore}
-            onClick={()=>props.onMore()}
-          >More</button>          
+            onClick={()=>props.onMore('More')}
+          >More</button>   
+          {
+            props.role === false ? null 
+              :  <button className={classes.btn}
+                  disabled={props.disabledEnough}
+                  onClick={()=>props.onСounting()}
+                >Сounting</button> 
+          }       
     </div>
 )
 

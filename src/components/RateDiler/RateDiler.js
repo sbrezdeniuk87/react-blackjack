@@ -3,7 +3,7 @@ import classes from './RateDiler.css'
 
 const RateDiler = props => (
     <div className={classes.RateDiler}>
-        <p>Привет дилер, <br/><strong id="diler">{props.name}</strong></p>
+        <p>Дилер <br/><strong id="diler">{props.name}</strong></p>
         <div className={classes.bet}>
           <label>Банк:</label>
           <p>{props.cash}</p>

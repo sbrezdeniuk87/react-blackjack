@@ -5,13 +5,11 @@ import {FETCH_SUCCESS,
         LOSE_GAME,
         DRAW_GAME,
         DEAL_HAND,
-        PLAY_HAND} from '../actions/actionType'
-// import openSocket from 'socket.io-client';
-// const socket = openSocket('http://localhost:3001');
+        PLAY_HAND,
+        OPPONENT_DATA,
+        MAKE_BET_SERVER,
+        MESSAGE_BUTTON} from '../actions/actionType'
 
-// socket.on('players', serverData=>{
-//     console.log('playersRedux', serverData);                          
-// }); 
  
 const initialState = {
     deck: [
@@ -309,6 +307,11 @@ const initialState = {
         }
     ],
     bet: 0,
+    cash: 0,
+    nameUser: '',
+    role: null,
+    opponentName: '',
+    opponentCash: 0,
     playerHand: [],
     playerHandSum: 0,
     dealerHand: [],
@@ -317,21 +320,48 @@ const initialState = {
     isEnough: false,
     isMore: false,
     backProfile: false,
-    isExit: false
+    isExit: false,
+    message: '',
+    messageResult: ''
 }
 
 export default function playReducer(state = initialState, action){
     switch(action.type){
         case FETCH_SUCCESS:
             return{
-                ...state
+                ...state,
+                cash: action.cash,
+                nameUser: action.nameUser,
+                role: action.role
             }        
         case FETCH_MAKE_BET:
             return{
                 ...state, 
                 bet: action.bet, 
                 cash: action.cash,
+                isPlay: action.isPlay,
+                messageResult:''
+            }
+        case MAKE_BET_SERVER:
+            return{
+                ...state, 
+                bet: action.bet, 
+                opponentCash: action.opponentCash,
                 isPlay: action.isPlay
+            }
+        case OPPONENT_DATA:
+            return{
+                ...state, 
+                opponentName: action.opponentName,
+                opponentCash: action.opponentCash
+            }
+        case MESSAGE_BUTTON:
+            return{
+                ...state, 
+                message: action.message,
+                isPlay: action.isPlay,
+                isEnough: action.isEnough,
+                isMore: action.isMore
             }
         case HAND_SUCCESS:
             return{
@@ -340,9 +370,10 @@ export default function playReducer(state = initialState, action){
                 playerHandSum: action.playerHandSum,
                 dealerHand: action.dealerHand,
                 dealerHandSum: action.dealerHandSum,
-                isPlay: false,
-                isEnough: true,
-                isMore: true
+                isPlay: action.isPlay,
+                isEnough: action.isEnough,
+                isMore: action.isMore,
+                message: ''
             }
         case WIN_GAME:
             return{
@@ -351,8 +382,10 @@ export default function playReducer(state = initialState, action){
                 dealerHandSum: action.dealerHandSum,
                 bet: action.bet,
                 cash: action.cash,
+                opponentCash: action.opponentCash,
                 playerHand: action.playerHand,
                 dealerHand: action.dealerHand,
+                messageResult: action.messageResult,
                 isEnough: false,
                 isMore: false
             }
@@ -361,9 +394,12 @@ export default function playReducer(state = initialState, action){
                 ...state,
                 playerHandSum: action.playerHandSum,
                 bet: action.bet,
+                cash: action.cash,
+                opponentCash: action.opponentCash,
                 dealerHandSum: action.dealerHandSum,
                 playerHand: action.playerHand,
                 dealerHand: action.dealerHand,
+                messageResult: action.messageResult,
                 isEnough: false,
                 isMore: false
             }
@@ -374,8 +410,10 @@ export default function playReducer(state = initialState, action){
                 dealerHandSum: action.dealerHandSum,
                 bet: action.bet,
                 cash: action.cash,
+                opponentCash: action.opponentCash,
                 playerHand: action.playerHand,
                 dealerHand: action.dealerHand,
+                messageResult: action.messageResult,
                 isEnough: false,
                 isMore: false
             }
@@ -383,13 +421,18 @@ export default function playReducer(state = initialState, action){
             return{
                 ...state,
                 dealerHand: action.dealerHand,
-                dealerHandSum: action.dealerHandSum
+                dealerHandSum: action.dealerHandSum,
+                message: ''
             }
         case PLAY_HAND:
             return{
                 ...state,
                 playerHand: action.playerHand,
-                playerHandSum: action.playerHandSum
+                playerHandSum: action.playerHandSum,
+                isPlay: action.isPlay,
+                isEnough: action.isEnough,
+                isMore: action.isMore,
+                message: ''
             }
         default:
             return state

@@ -4,5 +4,6 @@ import profileReducer from './profile'
 
 export default combineReducers({
     playTable: playReducer,
-    profile: profileReducer
+    profile: profileReducer,
+    list: {playReducer,profileReducer}
 })

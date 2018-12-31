@@ -12,22 +12,22 @@ import {NavLink, Redirect} from 'react-router-dom'
 import {fetchMakeBet, 
         onPlayHandler,
         onEnoughHandler,
-        onMoreHandler} from '../../store/actions/playTable';
-// import {getDataUser} from '../../store/actions/profile';
-import openSocket from 'socket.io-client';
+        onMoreHandler,
+        getProfileData,
+        serverData,
+        pressButton,
+        onСountingHandler} from '../../store/actions/playTable';
 
-const socket = openSocket('http://localhost:3001');
 
 class PlayTable extends Component {
 
     state = {
-        isLogout: false,
-        opponentName: '',
-        opponentCash: ''
+        isLogout: false
     }
     
    onCreateDibHandler = value =>{
         let div = document.createElement('div');
+
         switch(value){
             case '1':
                 div.className = classes.dib_1 
@@ -46,10 +46,15 @@ class PlayTable extends Component {
                 break;
             default:
                 div.className = classes.dib_200
-        }        
+        }   
+
         div.innerHTML = value;
         let bet = parseInt(this.props.bet) + parseInt(value);
-        let cash = parseInt(this.props.cash) - parseInt(value);
+        let cash 
+        if(this.props.role !== true){
+             cash = parseInt(this.props.cash) - parseInt(value);
+        }       
+       
         if(bet !== 0 && cash >= 0 && this.props.playerHandSum === 0){
             let isPlay = true;
             this.props.fetchMakeBet(bet, cash, isPlay);
@@ -64,8 +69,6 @@ class PlayTable extends Component {
         this.setState({
             isLogout: true
         });
-
-        socket.disconnect();
     }
 
     componentDidMount(){
@@ -75,24 +78,9 @@ class PlayTable extends Component {
             this.setState({
                 isLogout: true
             });
-        }else{                      
-            // this.props.getDataUser(userToken);
-            let serverdataUser = {
-                name: this.props.nameUser,
-                cash: this.props.cash
-            }
-            socket.emit('new_player', serverdataUser);
-            socket.on('create-player', serverData=>{
-                console.log('New player', serverData);
-                this.setState({
-                    opponentName: serverData.name,
-                    opponentCash: serverData.cash
-                })
-            })
-            // socket.on('players', serverData=>{
-            //    console.log('players', serverData);               
-            // });
-            
+        }else{ 
+            this.props.getProfileData();                     
+            this.props.serverData();        
         }       
 
     }
@@ -102,11 +90,17 @@ class PlayTable extends Component {
         if(this.state.isLogout){
             return (<Redirect to='/' />)
         }else if(this.props.role){
-            return(
-                <div className={classes.PlayTable}>
+            return(                
+                <div className={classes.PlayTable}> 
+                    {
+                        this.props.message === '' ? null 
+                            : alert(this.props.message)
+                    }    
+                                 
                     <Rate 
-                        cash={this.state.opponentCash}
-                        name={this.state.opponentName}
+                        cash={this.props.opponentCash}
+                        name={this.props.opponentName}
+                        bet={this.props.bet}
                     />
                     <RateDiler 
                         bet={this.props.bet}
@@ -116,20 +110,24 @@ class PlayTable extends Component {
                     <DealerHand 
                         dealerHand={this.props.dealerHand}
                         dealerHandSum={this.props.dealerHandSum}
+                        role={this.props.role}
                     />
                     <div id="dibsBet"></div>
                     <PlayerHand 
                         playerHand={this.props.playerHand}
                         playerHandSum={this.props.playerHandSum}
+                        role={this.props.role}
                     />
                     
                     <PlayButton 
                         onPlay={this.props.onPlayHandler}
                         onEnough={this.props.onEnoughHandler}
                         onMore={this.props.onMoreHandler}
+                        onСounting={this.props.onСountingHandler}
                         disabledPlay={!this.props.isPlay}
                         disabledEnough={!this.props.isEnough}
                         disabledMore={!this.props.isMore}
+                        role={this.props.role}
                     /> 
                     <div className={classes.Button}>
                     <NavLink to='/profile'>
@@ -145,9 +143,14 @@ class PlayTable extends Component {
         }else{
             return(
                 <div className={classes.PlayTable}>
+                    {
+                        this.props.messageResult === '' || this.props.messageResult === undefined ? null 
+                            : alert(this.props.messageResult)
+                    }  
                     <RateDiler 
-                        cash={this.state.opponentCash}
-                        name={this.state.opponentName}
+                        cash={this.props.opponentCash}
+                        name={this.props.opponentName}
+                        bet={this.props.bet}
                     />
                     <Rate 
                         bet={this.props.bet}
@@ -168,12 +171,14 @@ class PlayTable extends Component {
                         onDibCLick={this.onCreateDibHandler}
                     />
                     <PlayButton 
-                        onPlay={this.props.onPlayHandler}
-                        onEnough={this.props.onEnoughHandler}
-                        onMore={this.props.onMoreHandler}
+                        onPlay={this.props.pressButton}
+                        onEnough={this.props.pressButton}
+                        onMore={this.props.pressButton}
                         disabledPlay={!this.props.isPlay}
                         disabledEnough={!this.props.isEnough}
                         disabledMore={!this.props.isMore}
+                        role={this.props.role}
+                        onСounting={this.props.onСountingHandler}
                     /> 
                     <div className={classes.Button}>
                     <NavLink to='/profile'>
@@ -197,8 +202,10 @@ function mapStateToProps(state){
         deck: state.playTable.deck,
         dibs:state.playTable.dibs,
         bet: state.playTable.bet,
-        cash: state.profile.cash,
-        nameUser: state.profile.name,
+        cash: state.playTable.cash,
+        nameUser: state.playTable.nameUser,
+        opponentName: state.playTable.opponentName,
+        opponentCash: state.playTable.opponentCash,
         playerHand: state.playTable.playerHand,
         playerHandSum: state.playTable.playerHandSum,
         dealerHand: state.playTable.dealerHand,
@@ -208,17 +215,26 @@ function mapStateToProps(state){
         isMore: state.playTable.isMore,
         backProfile: state.playTable.backProfile,
         isExit: state.playTable.isExit,
-        role: state.profile.role
+        role: state.playTable.role,
+        message: state.playTable.message,
+        messageResult: state.playTable.messageResult,
+        nameProfile: state.profile.name,
+        roleProfile: state.profile.role,
+        cashProfile: state.profile.cash
+
     }
 }
 
 function mapDispatchToProps(dispatch){
     return{
         fetchMakeBet: (bet, cash, isPlay)=> dispatch(fetchMakeBet(bet, cash, isPlay)),
-        // getDataUser: userToken => dispatch(getDataUser(userToken)),
+        pressButton: (nameButton)=> dispatch(pressButton(nameButton)),
+        serverData: ()=>dispatch(serverData()),
+        getProfileData: () => dispatch(getProfileData()),
         onPlayHandler: () => dispatch(onPlayHandler()),
         onEnoughHandler: () => dispatch(onEnoughHandler()),
-        onMoreHandler: () => dispatch(onMoreHandler())
+        onMoreHandler: () => dispatch(onMoreHandler()),
+        onСountingHandler: () => dispatch(onСountingHandler())
     }
 }
 

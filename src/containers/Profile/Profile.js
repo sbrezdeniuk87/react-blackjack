@@ -28,8 +28,8 @@ class Profile extends Component{
                 isLogout: true
             });
         }else{      
-            this.props.getDataUser(userToken);    
-            console.log(this.props.loading)       
+            this.props.getDataUser(userToken);   
+               
         }   
     }
 

@@ -4,7 +4,10 @@ import Card from '../Card/Card'
 
 const PlayerHand = props =>{
     return(
-        <div className={classes.PlayerHand}>
+        <div className={props.role === true ? classes.PlayerHandTrue : classes.PlayerHand}>
+            {
+                props.name === '' ? null : <b>{props.name}</b> 
+            }
             {
                 props.playerHandSum === 0 ? null : <p>{props.playerHandSum}</p>
             }

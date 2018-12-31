@@ -147,28 +147,98 @@ app.use((error, req, res, next)=>{
 
 
 io.on('connection', (client) => {
+    
     console.log("New client has connected with id:", client.id);
-    // client.emit("bet", 'Welcome in the socketId - '+ client.id);
     
     client.on("new_player",(serverData)=>{
         console.log('serverData', serverData);
         players[client.id] = serverData;
-        if(players[client.id] !== client.id){
-            client.brodcast.emit('create-player',players[client.id]);
-            console.log('new_client: ', players );
-        }
-        
+        client.emit('response', players);
+        client.broadcast.emit('response', players);
+        console.log('new_client: ', players );
     });
-    // client.on('choose_role', result =>{
-    //     players[client.id] = {...players[client.id],'role': result};
-    //     console.log('choose_role', players);
-    //     client.emit('players', players);
-    //     console.log('players Emit', players);
-    // });
-    // client.on('check_role', playerName => {
-    //     console.log('playerName', playerName);
-    //     players[client.id] === client.id ? client.emit('check_role', true) : client.emit('check_role', false); 
-    // });
+
+    client.on('bet', clientBet => {        
+        players[client.id] = {...players[client.id],'bet': clientBet};
+        console.log('clientBet', players)
+        client.emit('betResponse', players);
+        client.broadcast.emit('betResponse', players);
+    });
+    
+    client.on('pressButton', message => {  
+        console.log('pressButton', message);        
+        client.broadcast.emit('pressButton', message);
+    });
+
+    client.on('cardPlay', cardPlay => {     
+        players[client.id] = {...players[client.id],'card': cardPlay};
+        console.log('clientGame', players);
+        client.broadcast.emit('cardPlay', players);
+    });
+    client.on('cardMore', cardMore => {  
+        players[client.id].card.playerHand = cardMore.playerHand;
+        players[client.id].card.playerHandSum = cardMore.playerHandSum;      
+        client.broadcast.emit('cardPlay', players);
+    });
+    client.on('cardEnough', cardEnough => {  
+        players[client.id].card.dealerHand = cardEnough.dealerHand;
+        players[client.id].card.dealerHandSum = cardEnough.dealerHandSum;      
+        client.broadcast.emit('cardPlay', players);
+    });
+    client.on('winGame', winGame => { 
+        console.log('winGame', winGame);
+        for(let id in players){
+            if(players[id].role === true){
+                players[id].card = {
+                    playerHandSum: winGame.playerHandSum,
+                    dealerHandSum: winGame.dealerHandSum,
+                    playerHand: winGame.dealerHand,
+                    dealerHand: winGame.dealerHand,
+                    isEnough: winGame.isEnough,
+                    isMore: winGame.isMore,
+                    bet: winGame.bet,
+                    opponentCash: winGame.opponentCash,
+                    cash: winGame.cash,
+                    messageResult: winGame.messageResult
+
+                }
+            }else{
+                players[id].bet = {
+                    bet: winGame.bet,
+
+                }
+            }
+        }
+
+        client.broadcast.emit('finishGame', players);
+    });
+    client.on('loseGame', loseGame => { 
+        console.log('loseGame', loseGame);
+        for(let id in players){
+            if(players[id].role === true){
+                players[id].card = {
+                    playerHandSum: loseGame.playerHandSum,
+                    dealerHandSum: loseGame.dealerHandSum,
+                    playerHand: loseGame.dealerHand,
+                    dealerHand: loseGame.dealerHand,
+                    isEnough: loseGame.isEnough,
+                    isMore: loseGame.isMore,
+                    bet: loseGame.bet,
+                    opponentCash: loseGame.opponentCash,
+                    cash: loseGame.cash,
+                    messageResult: loseGame.messageResult
+                }
+            }else{
+                players[id].bet = {
+                    bet: loseGame.bet,
+
+                }
+            }
+        } 
+        console.log('finishPlayers', players);
+        
+        client.broadcast.emit('finishGame', players);
+    });
     client.on('disconnect', function(){
         delete players[client.id];
         console.log('After delet ', players);
