@@ -4,7 +4,7 @@ import Dib from './Dib/Dib'
 
 const Dibs = props =>(
    
-    <ul className={classes.Dibs}>
+    <ul className={classes.dibs}>
         {
             props.dibs.map((dib, index)=>{
                 return(
