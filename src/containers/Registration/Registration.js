@@ -8,62 +8,65 @@ import axios from 'axios';
 
 class Registration extends Component{
 
-    state = {
-		isRegistr: false,
-		isFormValid: false,
-		formControls:{
-            name:{
-				value: '',
-				type: 'text',
-				label: 'Имя',
-				errorMessage: 'Введите корректный имя',
-				valid: false,
-				touched: false,
-				validation:{
-					required: true,
-					minLength: 3
-				}
-			},
-			email:{
-				value: '',
-				type: 'email',
-				label: 'Email',
-				errorMessage: 'Введите корректный email',
-				valid: false,
-				touched: false,
-				validation:{
-					required: true,
-					email: true
-				}
-			},
-			password: {
-				value: '',
-				type: 'password',
-				label: 'Пароль',
-				errorMessage: 'Введите корректный пароль',
-				valid: false,
-				touched: false,
-				validation:{
-					required: true,
-					minLength: 6
-				}
-            },
-            passwordRepeat: {
-				value: '',
-				type: 'password',
-				label: 'Повторить пароль',
-				errorMessage: 'Пароль не совпадает',
-				valid: false,
-				touched: false,
-				validation:{
-					required: true,
-					minLength: 6
+	constructor(props) {
+        super(props);
+        this.state = {
+            isRegistr: false,
+			isFormValid: false,
+			formControls:{
+				name:{
+					value: '',
+					type: 'text',
+					label: 'Имя',
+					errorMessage: 'Введите корректный имя',
+					valid: false,
+					touched: false,
+					validation:{
+						required: true,
+						minLength: 3
+					}
+				},
+				email:{
+					value: '',
+					type: 'email',
+					label: 'Email',
+					errorMessage: 'Введите корректный email',
+					valid: false,
+					touched: false,
+					validation:{
+						required: true,
+						email: true
+					}
+				},
+				password: {
+					value: '',
+					type: 'password',
+					label: 'Пароль',
+					errorMessage: 'Введите корректный пароль',
+					valid: false,
+					touched: false,
+					validation:{
+						required: true,
+						minLength: 6
+					}
+				},
+				passwordRepeat: {
+					value: '',
+					type: 'password',
+					label: 'Повторить пароль',
+					errorMessage: 'Пароль не совпадает',
+					valid: false,
+					touched: false,
+					validation:{
+						required: true,
+						minLength: 6
+					}
 				}
 			}
-		}
-	}
+        };
+    }
 
-	registerHandler = async () =>{
+    registerHandler = async () =>{
 		const dataAuth = await {
 			name: this.state.formControls.name.value,
 			email: this.state.formControls.email.value,
