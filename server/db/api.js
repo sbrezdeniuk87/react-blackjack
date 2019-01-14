@@ -35,19 +35,46 @@ exports.checkUser = function(userData) {
 		.findOne({email: userData.email})
 		.then((doc)=>{
 			if(doc){
+				console.log('CheckUser', doc);
 				if ( doc.password == hash(userData.password) ){
 					console.log("User password is ok");
 					return Promise.resolve(doc);
 				} else {
 					return false; 
 				}
-			}else{				
+			}else{
+				console.log('CheckUser', doc);				
 				return false; 
 			}			
 		}).catch(()=>{
 			return false;
 		});
 }
+
+// exports.checkUser = function(userData) { 
+// 	return User
+// 		.find({email: userData.email})
+// 		.where('password').gt(userData.password).exec(function(err, user) {
+// 			if (err) throw err;
+		  
+// 			// show the admins in the past month
+// 			return Promise.resolve(user);
+// 		  });
+// 		// .where('password').gte(userData.password)
+// 		// .then((doc)=>{
+// 		// 	// if(doc){
+// 		// 		return Promise.resolve(doc);
+// 		// 		// } else {
+// 		// 		// 	return false; 
+// 		// 		// }
+// 		// 	// }else{
+// 		// 	// 	console.log('CheckUser', false);				
+// 		// 	// 	return false; 
+// 		// 	// }			
+// 		// }).catch(()=>{
+// 		// 	return false;
+// 		// });
+// }
 
 exports.checkUserId = function(userId) { 
 	return User
