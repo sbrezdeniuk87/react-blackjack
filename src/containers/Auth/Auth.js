@@ -8,36 +8,40 @@ import axios from 'axios';
 
 class Auth extends Component{
 	
-	state = {
-		isLogin: false,
-		isFormValid: false,
-		formControls:{
-			email:{
-				value: '',
-				type: 'email',
-				label: 'Email',
-				errorMessage: 'Введите корректный email',
-				valid: false,
-				touched: false,
-				validation:{
-					required: true,
-					email: true
-				}
-			},
-			password: {
-				value: '',
-				type: 'password',
-				label: 'Пароль',
-				errorMessage: 'Введите корректный пароль',
-				valid: false,
-				touched: false,
-				validation:{
-					required: true,
-					minLength: 6
+	constructor(props) {
+        super(props);
+        this.state = {
+            isLogin: false,
+			isFormValid: false,
+			formControls:{
+				email:{
+					value: '',
+					type: 'email',
+					label: 'Email',
+					errorMessage: 'Введите корректный email',
+					valid: false,
+					touched: false,
+					validation:{
+						required: true,
+						email: true
+					}
+				},
+				password: {
+					value: '',
+					type: 'password',
+					label: 'Пароль',
+					errorMessage: 'Введите корректный пароль',
+					valid: false,
+					touched: false,
+					validation:{
+						required: true,
+						minLength: 6
+					}
 				}
 			}
-		}
-	}
+        };
+    }
+	
 
 	loginHandler = async () =>{
 		const dataAuth = await {
@@ -47,8 +51,8 @@ class Auth extends Component{
 		
 		const respons = await axios.post('http://localhost:3001/',dataAuth);
 		
-		console.log(respons);
-		if(respons.data){
+		console.log('Auth', respons);
+		if(respons.data.userId){
 			localStorage.setItem('userToken', respons.data.token);		
 			this.setState({
 				isLogin: true
@@ -86,19 +90,7 @@ class Auth extends Component{
 		return isValid
 	}
 
-	componentDidMount(){
-		// socket.on("bet",(serverData)=>{
-		// 	console.log(serverData);
-		//   });
-		// socket.emit('result', 'Hellow from client');
-	}
-
-	// componentDidUpdate(){
-	// 	socket.on("bet",(serverData)=>{
-	// 		console.log(serverData);
-	// 	  });
-	// }
-
+	
 	onChangeHandler = (event, controlName)=>{
 		const formControls = {...this.state.formControls}
 		const control = {...formControls[controlName]}
