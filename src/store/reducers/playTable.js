@@ -8,7 +8,8 @@ import {FETCH_SUCCESS,
         PLAY_HAND,
         OPPONENT_DATA,
         MAKE_BET_SERVER,
-        MESSAGE_BUTTON} from '../actions/actionType'
+        MESSAGE_BUTTON,
+        AUTH_LOGOUT} from '../actions/actionType'
 
  
 const initialState = {
@@ -321,6 +322,7 @@ const initialState = {
     isMore: false,
     backProfile: false,
     isExit: false,
+    isDib: true,
     message: '',
     messageResult: ''
 }
@@ -353,7 +355,8 @@ export default function playReducer(state = initialState, action){
             return{
                 ...state, 
                 opponentName: action.opponentName,
-                opponentCash: action.opponentCash
+                opponentCash: action.opponentCash,
+                isDib: action.isDib
             }
         case MESSAGE_BUTTON:
             return{
@@ -361,7 +364,8 @@ export default function playReducer(state = initialState, action){
                 message: action.message,
                 isPlay: action.isPlay,
                 isEnough: action.isEnough,
-                isMore: action.isMore
+                isMore: action.isMore,
+                isDib: action.isDib
             }
         case HAND_SUCCESS:
             return{
@@ -387,7 +391,8 @@ export default function playReducer(state = initialState, action){
                 dealerHand: action.dealerHand,
                 messageResult: action.messageResult,
                 isEnough: false,
-                isMore: false
+                isMore: false,
+                isDib: false
             }
         case LOSE_GAME:
             return{
@@ -401,7 +406,8 @@ export default function playReducer(state = initialState, action){
                 dealerHand: action.dealerHand,
                 messageResult: action.messageResult,
                 isEnough: false,
-                isMore: false
+                isMore: false,
+                isDib: false
             }
         case DRAW_GAME:
             return{
@@ -415,7 +421,8 @@ export default function playReducer(state = initialState, action){
                 dealerHand: action.dealerHand,
                 messageResult: action.messageResult,
                 isEnough: false,
-                isMore: false
+                isMore: false,
+                isDib: false
             }
         case DEAL_HAND:
             return{
@@ -433,6 +440,28 @@ export default function playReducer(state = initialState, action){
                 isEnough: action.isEnough,
                 isMore: action.isMore,
                 message: ''
+            }
+        case AUTH_LOGOUT:
+            return{
+                ...state,
+                bet: 0,
+                cash: 0,
+                nameUser: '',
+                role: null,
+                opponentName: '',
+                opponentCash: 0,
+                playerHand: [],
+                playerHandSum: 0,
+                dealerHand: [],
+                dealerHandSum: 0,
+                isPlay: false,
+                isEnough: false,
+                isMore: false,
+                backProfile: false,
+                isExit: false,
+                isDib: true,
+                message: '',
+                messageResult: ''
             }
         default:
             return state
