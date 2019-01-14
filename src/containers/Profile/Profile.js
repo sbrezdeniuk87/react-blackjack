@@ -7,11 +7,14 @@ import Loader from '../../components/UI/Loader/Loader'
 import {getDataUser, chooseRoleHandler} from '../../store/actions/profile';
 
 class Profile extends Component{
-    state = {
-        isLogout: false
-    }
-
     
+    constructor(props) {
+        super(props);
+        this.state = {
+            isLogout: false
+        };
+    }
+       
 
     isLogout = () => {
         localStorage.removeItem('userToken');
