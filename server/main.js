@@ -4,7 +4,7 @@ const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const server = require('http').createServer(app);
-
+const path = require('path');
 
 const api = require('./db/api.js');
 
@@ -13,6 +13,7 @@ const api = require('./db/api.js');
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, '../build')));
 
 app.post('/',(req ,res)=>{
 

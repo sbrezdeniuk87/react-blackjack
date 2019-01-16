@@ -23,7 +23,7 @@ export function getDataUser(userId){
         const data = {
             userId: userId  
         }
-        const respons = await axios.post('http://localhost:3001/play', data);
+        const respons = await axios.post('http://13.58.46.26:3001/play', data);
         if(respons.data){
             const setStateUser = {
                 cash: respons.data.bet,
@@ -345,7 +345,7 @@ async function updateData(cash){
     const dataUpdate ={
         userUpdate, cash
     }
-    const respons = await axios.put('http://localhost:3001/playUser', dataUpdate);
+    const respons = await axios.put('http://13.58.46.26:3001/playUser', dataUpdate);
     console.log(respons);
     // if(respons.data){
     //     const setStateUser = {

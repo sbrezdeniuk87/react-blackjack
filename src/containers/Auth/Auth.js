@@ -46,7 +46,7 @@ class Auth extends Component{
 			password: this.state.formControls.password.value
 		};
 		
-		const respons = await axios.post('http://localhost:3001/',dataAuth);
+		const respons = await axios.post('http://13.58.46.26:3001/',dataAuth);
 		if(respons.data){
 			localStorage.setItem('userId', respons.data);			
 			this.setState({

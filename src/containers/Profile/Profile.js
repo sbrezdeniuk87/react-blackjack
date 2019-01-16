@@ -35,7 +35,7 @@ class Profile extends Component{
         const data = {
             userId: userId  
         }
-        const respons = await axios.post('http://localhost:3001/profile', data);
+        const respons = await axios.post('http://13.58.46.26:3001/profile', data);
         if(respons.data){
             this.setState({
                 bet: respons.data.bet,

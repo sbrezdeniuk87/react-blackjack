@@ -72,7 +72,7 @@ class Registration extends Component{
 
 		console.log(dataAuth);
 				
-		const respons = await axios.post('http://localhost:3001/registration', dataAuth);
+		const respons = await axios.post('http://13.58.46.26:3001/registration', dataAuth);
 		console.log(respons.data);
 		if(respons.data){
 			this.setState({
