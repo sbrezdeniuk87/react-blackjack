@@ -16,16 +16,23 @@ import {fetchMakeBet,
         getProfileData,
         serverData,
         pressButton,
-        onСountingHandler} from '../../store/actions/playTable';
+        onСountingHandler,
+        isLogouting,
+        toProfile} from '../../store/actions/playTable';
 
 
 class PlayTable extends Component {
 
-    state = {
-        isLogout: false
+    constructor(props) {
+        super(props);
+        this.state = {
+            isLogout: false,
+            count: false
+        };
     }
     
-   onCreateDibHandler = value =>{
+   onCreateDibHandler = (isDib, value) =>{
+       if(isDib){
         let div = document.createElement('div');
 
         switch(value){
@@ -62,16 +69,24 @@ class PlayTable extends Component {
         }
         
                 
+       }
+        
     }
 
+    
     isLogout = () => {
         localStorage.removeItem('userToken');
+        this.props.isLogouting();
         this.setState({
             isLogout: true
         });
     }
 
-    componentDidMount(){
+    backToProfile = () => {
+        this.props.toProfile();        
+    }
+
+    componentWillMount(){
         const userToken = localStorage.getItem('userToken');
         
         if(userToken === null){
@@ -79,14 +94,28 @@ class PlayTable extends Component {
                 isLogout: true
             });
         }else{ 
-            this.props.getProfileData();                     
-            this.props.serverData();        
-        }       
+            this.props.getProfileData(); 
+            console.log('COUNT', this.props.countPlayers)                    
+            // this.props.serverData(); 
+        }
+    }
+
+    componentDidMount(){
+        if(this.props.nameProfile === ''){
+            localStorage.removeItem('userToken');
+            this.setState({
+                isLogout: true 
+            });
+        }else{
+            this.props.serverData();
+            
+        } 
 
     }
 
-        
-    render(){
+
+
+    render(){ 
         if(this.state.isLogout){
             return (<Redirect to='/' />)
         }else if(this.props.role){
@@ -131,7 +160,7 @@ class PlayTable extends Component {
                     /> 
                     <div className={classes.Button}>
                     <NavLink to='/profile'>
-                        <Button type="success" >Профиль</Button>   
+                        <Button type="success"  onClick={this.backToProfile}>Профиль</Button>   
                     </NavLink>                            
                         <Button 
                             type="error" 
@@ -169,6 +198,7 @@ class PlayTable extends Component {
                     <Dibs 
                         dibs={this.props.dibs}
                         onDibCLick={this.onCreateDibHandler}
+                        disabledDib={!this.props.isDib}
                     />
                     <PlayButton 
                         onPlay={this.props.pressButton}
@@ -182,7 +212,7 @@ class PlayTable extends Component {
                     /> 
                     <div className={classes.Button}>
                     <NavLink to='/profile'>
-                        <Button type="success" >Профиль</Button>   
+                        <Button type="success" onClick={this.backToProfile}>Профиль</Button>   
                     </NavLink>                            
                         <Button 
                             type="error" 
@@ -215,9 +245,12 @@ function mapStateToProps(state){
         isMore: state.playTable.isMore,
         backProfile: state.playTable.backProfile,
         isExit: state.playTable.isExit,
+        isDib: state.playTable.isDib,
+        isLogouting: state.playTable.isLogouting,
         role: state.playTable.role,
         message: state.playTable.message,
         messageResult: state.playTable.messageResult,
+        countPlayers: state.playTable.countPlayers,
         nameProfile: state.profile.name,
         roleProfile: state.profile.role,
         cashProfile: state.profile.cash
@@ -234,7 +267,9 @@ function mapDispatchToProps(dispatch){
         onPlayHandler: () => dispatch(onPlayHandler()),
         onEnoughHandler: () => dispatch(onEnoughHandler()),
         onMoreHandler: () => dispatch(onMoreHandler()),
-        onСountingHandler: () => dispatch(onСountingHandler())
+        onСountingHandler: () => dispatch(onСountingHandler()),
+        isLogouting: () => dispatch(isLogouting()),
+        toProfile: () => dispatch(toProfile())
     }
 }
 

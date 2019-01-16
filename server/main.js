@@ -13,6 +13,7 @@ const  io  =  require('socket.io')(server);
 const api = require('./db/api.js');
 const secrekeyJWT = 'pvpnCCZfwOF85pBjbOebZiYIDhZ3w9LZrKwBZ7152K89mPCOHtbRlmr5Z91ci4L';
 const players = {};
+let countPlayers = 0;
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -27,6 +28,7 @@ app.post('/',(req ,res)=>{
     
     api.checkUser(dataUser)
 			.then(async (doc)=>{
+                console.log('userID', doc);
                 const token = await jwt.sign({ userId: doc._id }, secrekeyJWT );
                 res.json({
                     type: true,
@@ -149,14 +151,18 @@ app.use((error, req, res, next)=>{
 io.on('connection', (client) => {
     
     console.log("New client has connected with id:", client.id);
+    countPlayers++;
     
-    client.on("new_player",(serverData)=>{
-        console.log('serverData', serverData);
-        players[client.id] = serverData;
-        client.emit('response', players);
-        client.broadcast.emit('response', players);
-        console.log('new_client: ', players );
-    });
+    if(countPlayers <= 2){
+        client.on("new_player",(serverData)=>{
+            console.log('serverData', serverData);
+            players[client.id] = serverData;
+            client.emit('response', players);
+            client.broadcast.emit('response', players);
+            console.log('new_client: ', players );
+        });
+    }
+    
 
     client.on('bet', clientBet => {        
         players[client.id] = {...players[client.id],'bet': clientBet};
@@ -175,16 +181,19 @@ io.on('connection', (client) => {
         console.log('clientGame', players);
         client.broadcast.emit('cardPlay', players);
     });
+
     client.on('cardMore', cardMore => {  
         players[client.id].card.playerHand = cardMore.playerHand;
         players[client.id].card.playerHandSum = cardMore.playerHandSum;      
         client.broadcast.emit('cardPlay', players);
     });
+    
     client.on('cardEnough', cardEnough => {  
         players[client.id].card.dealerHand = cardEnough.dealerHand;
         players[client.id].card.dealerHandSum = cardEnough.dealerHandSum;      
         client.broadcast.emit('cardPlay', players);
     });
+
     client.on('winGame', winGame => { 
         console.log('winGame', winGame);
         for(let id in players){
@@ -212,6 +221,7 @@ io.on('connection', (client) => {
 
         client.broadcast.emit('finishGame', players);
     });
+
     client.on('loseGame', loseGame => { 
         console.log('loseGame', loseGame);
         for(let id in players){
@@ -239,14 +249,19 @@ io.on('connection', (client) => {
         
         client.broadcast.emit('finishGame', players);
     });
-    client.on('disconnect', function(){
-        delete players[client.id];
-        console.log('After delet ', players);
-    });
-    
 
-   
-    
+    client.on('backToProfile', () => {
+        players[client.id] = {}; 
+        client.broadcast.emit('after_delet', players);        
+        console.log('After delet ', players);       
+    });
+
+    client.on('disconnect', () => { 
+        delete players[client.id];   
+        countPlayers--;     
+        client.broadcast.emit('after_delet', players);        
+        console.log('After delet ', players);       
+    });   
     
 });
 

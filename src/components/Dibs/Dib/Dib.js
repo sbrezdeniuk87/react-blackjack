@@ -17,7 +17,7 @@ const Dib = props =>{
         return(
             <li className={cls.join(' ')}
                 id={props.dib.id}
-                onClick={()=>props.onDibCLick(props.dib.value)}
+                onClick={()=>props.onDibCLick(props.disabledDib, props.dib.value)}
             >
                 {props.dib.value}
             </li>

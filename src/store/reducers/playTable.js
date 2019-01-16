@@ -323,6 +323,7 @@ const initialState = {
     backProfile: false,
     isExit: false,
     isDib: true,
+    countPlayers: false,
     message: '',
     messageResult: ''
 }
@@ -460,6 +461,7 @@ export default function playReducer(state = initialState, action){
                 backProfile: false,
                 isExit: false,
                 isDib: true,
+                countPlayers: false,
                 message: '',
                 messageResult: ''
             }

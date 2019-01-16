@@ -8,7 +8,8 @@ import {FETCH_SUCCESS,
         PLAY_HAND,
         OPPONENT_DATA,
         MAKE_BET_SERVER,
-        MESSAGE_BUTTON} from './actionType'
+        MESSAGE_BUTTON,
+        AUTH_LOGOUT} from './actionType'
 import axios from 'axios'
 
 import openSocket from 'socket.io-client';
@@ -89,6 +90,31 @@ export function serverData(){
                 
             } 
         })
+
+        socket.on('after_delet', serverData=>{
+            console.log('after_delet', Object.keys(serverData).length);
+            if(Object.keys(serverData).length === 1){
+                const opponentData={
+                    opponentName: '',
+                    opponentCash: '',
+                    isDib: true,
+                    messageResult:''
+                }
+                dispatch(opponent(opponentData));                            
+            }else{
+                for(let id in serverData){
+                    if(id !== socket.id){
+                        const opponentData={
+                            opponentName: '',
+                            opponentCash: '',
+                            isDib: true,
+                            messageResult:''
+                        }
+                        dispatch(opponent(opponentData));                       
+                    }
+                }
+            }
+        })
     }
 }
 
@@ -99,7 +125,8 @@ export function pressButton(nameButton){
         let disable = {
             isPlay: false,
             isEnough: false,
-            isMore: false
+            isMore: false,
+            isDib: true
         };
         dispatch(pressButtonMessage(message, disable));
         switch(nameButton){
@@ -163,14 +190,14 @@ export function getProfileData(){
         dispatch(fetchPlaySuccess(profileData))
         socket.emit('new_player', profileData);
         socket.on('response', serverData=>{
+            console.log('response',serverData)
             for(let id in serverData){
-                console.log('id', id);
-                console.log('socket.id', socket.id);
                 if(id !== socket.id){
                     if(role !== serverData[id].role){
                        const opponentData={
                             opponentName: serverData[id].nameUser,
-                            opponentCash: serverData[id].cash
+                            opponentCash: serverData[id].cash,
+                            isDib: false
                         }
                         dispatch(opponent(opponentData));
                     }
@@ -221,6 +248,7 @@ export function onPlayHandler (){
                     dealerHand:[],
                     isEnough: false,
                     isMore: false,
+                    isDib: false,
                     result: 'win',
                     messageResult: 'У Вас BlackJack!!!!!!!!!!!!!'
                 };
@@ -247,6 +275,7 @@ export function onPlayHandler (){
                     opponentCash,
                     isEnough: false,
                     isMore: false,
+                    isDib: false,
                     result: 'lose',
                     messageResult: 'Вы проиграли!!!!!!!!!!!!!'
                 };
@@ -287,6 +316,7 @@ export function onEnoughHandler(){
                     opponentCash,
                     isEnough: false,
                     isMore: false,
+                    isDib: false,
                     result: 'lose',
                     messageResult: 'У дилера BlackJack! Вы проиграли((('
                 }; 
@@ -310,6 +340,7 @@ export function onEnoughHandler(){
                     dealerHand:[],
                     isEnough: false,
                     isMore: false,
+                    isDib: false,
                     result: 'win',
                     messageResult: 'Вы выграли)))))))'
                 }; 
@@ -331,7 +362,10 @@ export function onMoreHandler(){
         let playerHandSum = await getSum(playerHand);
         const play_setState = {
             playerHand,
-            playerHandSum
+            playerHandSum,
+            isPlay: false,
+            isEnough: false,
+            isMore: false
         }
         socket.emit('cardMore', play_setState);
         dispatch(playHand(play_setState));
@@ -351,6 +385,7 @@ export function onMoreHandler(){
                     dealerHand:[],
                     isEnough: false,
                     isMore: false,
+                    isDib: false,
                     result: 'win',
                     messageResult: 'У Вас BlackJack!!!!!!!!!!!!!'
                 };
@@ -377,6 +412,7 @@ export function onMoreHandler(){
                     dealerHand:[],
                     isEnough: false,
                     isMore: false,
+                    isDib: false,
                     result: 'lose',
                     messageResult: 'Вы проиграли!!!!!!!!!!!!!'
                 };
@@ -409,6 +445,7 @@ export function onСountingHandler(){
                     opponentCash,
                     isEnough: false,
                     isMore: false,
+                    isDib: false,
                     result: 'lose',
                     messageResult: 'Вы проиграли!!!!!!!!!!!!!'
                 }; 
@@ -432,6 +469,7 @@ export function onСountingHandler(){
                     dealerHand:[],
                     isEnough: false,
                     isMore: false,
+                    isDib: false,
                     result: 'draw',
                     messageResult: 'Победила дружба!!!!!!!!!!!!!'
                 }; 
@@ -455,6 +493,7 @@ export function onСountingHandler(){
                     dealerHand:[],
                     isEnough: false,
                     isMore: false,
+                    isDib: false,
                     result: 'win',
                     messageResult: 'Вы выграли)))!!!!!!!!'
                 }; 
@@ -538,6 +577,21 @@ export function makeBetServer(betServer){
         ...betServer
     }
 }
+
+export function isLogouting (){
+    socket.disconnect();
+    return{
+        type: AUTH_LOGOUT
+    }
+}
+
+export function toProfile (){
+    socket.emit('backToProfile');
+    return{
+        type: AUTH_LOGOUT
+    }
+}
+
 
 
 
