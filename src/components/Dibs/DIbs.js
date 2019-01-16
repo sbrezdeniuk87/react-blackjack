@@ -11,7 +11,8 @@ const Dibs = props =>(
                     <Dib 
                         key={index}
                         dib={dib}
-                        onDibCLick={props.onDibCLick}                     
+                        onDibCLick={props.onDibCLick}  
+                        disabledDib={props.disabledDib}                   
                     />
                 )
             })
