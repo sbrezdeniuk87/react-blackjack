@@ -1,9 +1,9 @@
 {
-  "main.css": "/static/css/main.284733bd.chunk.css",
-  "main.js": "/static/js/main.6a780785.chunk.js",
-  "main.js.map": "/static/js/main.6a780785.chunk.js.map",
-  "static/js/1.aece3b8d.chunk.js": "/static/js/1.aece3b8d.chunk.js",
-  "static/js/1.aece3b8d.chunk.js.map": "/static/js/1.aece3b8d.chunk.js.map",
+  "main.css": "/static/css/main.aaab2fc2.chunk.css",
+  "main.js": "/static/js/main.f968ad3a.chunk.js",
+  "main.js.map": "/static/js/main.f968ad3a.chunk.js.map",
+  "static/js/1.14666060.chunk.js": "/static/js/1.14666060.chunk.js",
+  "static/js/1.14666060.chunk.js.map": "/static/js/1.14666060.chunk.js.map",
   "runtime~main.js": "/static/js/runtime~main.229c360f.js",
   "runtime~main.js.map": "/static/js/runtime~main.229c360f.js.map",
   "static/media/PlayTable.css": "/static/media/table.ea074e5a.png",
@@ -17,8 +17,8 @@
   "static/media/Eight.jpg": "/static/media/Eight.3ccecc3c.jpg",
   "static/media/Nine.jpg": "/static/media/Nine.12240a0c.jpg",
   "static/media/hit_small.jpg": "/static/media/hit_small.97eaf3ed.jpg",
-  "static/css/main.284733bd.chunk.css.map": "/static/css/main.284733bd.chunk.css.map",
+  "static/css/main.aaab2fc2.chunk.css.map": "/static/css/main.aaab2fc2.chunk.css.map",
   "index.html": "/index.html",
-  "precache-manifest.108082c275db20c3702e3adb01e3c3fd.js": "/precache-manifest.108082c275db20c3702e3adb01e3c3fd.js",
+  "precache-manifest.7cd702adf570cb80c730d8e4327eb3e9.js": "/precache-manifest.7cd702adf570cb80c730d8e4327eb3e9.js",
   "service-worker.js": "/service-worker.js"
 }
