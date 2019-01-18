@@ -9,7 +9,7 @@ import Button from '../../components/UI/Button/Button'
 import DealerHand from '../../components/DealerHand/DealerHand'
 import PlayerHand from '../../components/PlayerHand/PlayerHand'
 import {NavLink, Redirect} from 'react-router-dom'
-import {fetchMakeBet, 
+import {onCreateDibHandler, 
         onPlayHandler,
         onEnoughHandler,
         onMoreHandler,
@@ -30,50 +30,6 @@ class PlayTable extends Component {
             count: false
         };
     }
-    
-   onCreateDibHandler = (isDib, value) =>{
-       if(isDib){
-        let div = document.createElement('div');
-
-        switch(value){
-            case '1':
-                div.className = classes.dib_1 
-                break;
-            case '5':
-                div.className = classes.dib_5
-                break;
-            case '25':
-                div.className = classes.dib_25
-                break;
-            case '50':
-                div.className = classes.dib_50
-                break;
-            case '100':
-                div.className = classes.dib_100
-                break;
-            default:
-                div.className = classes.dib_200
-        }   
-
-        div.innerHTML = value;
-        let bet = parseInt(this.props.bet) + parseInt(value);
-        let cash 
-        if(this.props.role !== true){
-             cash = parseInt(this.props.cash) - parseInt(value);
-        }       
-       
-        if(bet !== 0 && cash >= 0 && this.props.playerHandSum === 0){
-            let isPlay = true;
-            this.props.fetchMakeBet(bet, cash, isPlay);
-            document.getElementById('dibsBet').appendChild(div);
-        }
-        
-                
-       }
-        
-    }
-
-    
     isLogout = () => {
         localStorage.removeItem('userToken');
         this.props.isLogouting();
@@ -95,8 +51,6 @@ class PlayTable extends Component {
             });
         }else{ 
             this.props.getProfileData(); 
-            console.log('COUNT', this.props.countPlayers)                    
-            // this.props.serverData(); 
         }
     }
 
@@ -141,7 +95,11 @@ class PlayTable extends Component {
                         dealerHandSum={this.props.dealerHandSum}
                         role={this.props.role}
                     />
-                    <div id="dibsBet"></div>
+                    <div id="dibsBet">
+                    {
+                       this.props.divDib
+                    }
+                    </div>
                     <PlayerHand 
                         playerHand={this.props.playerHand}
                         playerHandSum={this.props.playerHandSum}
@@ -197,7 +155,7 @@ class PlayTable extends Component {
                     />
                     <Dibs 
                         dibs={this.props.dibs}
-                        onDibCLick={this.onCreateDibHandler}
+                        onDibCLick={this.props.onCreateDibHandler}
                         disabledDib={!this.props.isDib}
                     />
                     <PlayButton 
@@ -260,7 +218,7 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
     return{
-        fetchMakeBet: (bet, cash, isPlay)=> dispatch(fetchMakeBet(bet, cash, isPlay)),
+        onCreateDibHandler: (isDib, value)=> dispatch(onCreateDibHandler(isDib, value)),
         pressButton: (nameButton)=> dispatch(pressButton(nameButton)),
         serverData: ()=>dispatch(serverData()),
         getProfileData: () => dispatch(getProfileData()),

@@ -9,24 +9,63 @@ import {FETCH_SUCCESS,
         OPPONENT_DATA,
         MAKE_BET_SERVER,
         MESSAGE_BUTTON,
-        AUTH_LOGOUT} from './actionType'
+        AUTH_LOGOUT} from './actionType' 
 import axios from 'axios'
+import classes from '../../containers/PlayTable/PlayTable.css'
 
 import openSocket from 'socket.io-client';
-
 const socket = openSocket('http://localhost:3001');
 
 
-export function fetchMakeBet(bet, cash, isPlay){
-    return dispatch =>{
-        let socketBet = {
-            bet, cash, isPlay
-        }
-        socket.emit('bet', socketBet);
-        dispatch(makeBet(socketBet));
-    }    
+
+export function onCreateDibHandler (isDib, value) {
+    return (dispatch, getState)=>{
+        const state = getState().playTable;
+        if(isDib){
+            let div = document.createElement('div');
+       
+            switch(value){
+                case '1':
+                    div.className = classes.dib_1 
+                    break;
+                case '5':
+                    div.className = classes.dib_5
+                    break;
+                case '25':
+                    div.className = classes.dib_25
+                    break;
+                case '50':
+                    div.className = classes.dib_50
+                    break;
+                case '100':
+                    div.className = classes.dib_100
+                    break;
+                default:
+                    div.className = classes.dib_200
+            }   
+       
+            div.innerHTML = value;
+            let bet = parseInt(state.bet) + parseInt(value);
+            let cash 
+            if(state.role !== true){
+                 cash = parseInt(state.cash) - parseInt(value);
+            }       
+           
+            if(bet !== 0 && cash >= 0 && state.playerHandSum === 0){
+                let socketBet = {
+                    bet, cash, isPlay: true, dib: div.innerHTML
+                }
+                socket.emit('bet', socketBet);
+                dispatch(makeBet(socketBet));
+                document.getElementById('dibsBet').appendChild(div);
+            }
+            
+                    
+           }
+    }
     
-}
+     
+ }
 
 export function serverData(){
     return dispatch =>{
@@ -39,6 +78,7 @@ export function serverData(){
                             bet: serverBet[id].bet.bet
                         } 
                         dispatch(makeBetServer(betServer));
+                        onCreateDib(serverBet[id].bet.dib);
                     }
                 }         
             }
@@ -643,4 +683,32 @@ async function updateData(cash){
 
 }
 
+function onCreateDib(value) {
+    let div = document.createElement('div');
+
+    switch(value){
+        case '1':
+            div.className = classes.dib_1 
+            break;
+        case '5':
+            div.className = classes.dib_5
+            break;
+        case '25':
+            div.className = classes.dib_25
+            break;
+        case '50':
+            div.className = classes.dib_50
+            break;
+        case '100':
+            div.className = classes.dib_100
+            break;
+        default:
+            div.className = classes.dib_200
+    }   
+
+    div.innerHTML = value;
+    
+    document.getElementById('dibsBet').appendChild(div);
+    
+}
 

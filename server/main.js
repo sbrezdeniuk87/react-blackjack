@@ -164,9 +164,8 @@ io.on('connection', (client) => {
     }
     
 
-    client.on('bet', clientBet => {        
+    client.on('bet', clientBet => {
         players[client.id] = {...players[client.id],'bet': clientBet};
-        console.log('clientBet', players)
         client.emit('betResponse', players);
         client.broadcast.emit('betResponse', players);
     });
