@@ -74,7 +74,6 @@ class Profile extends Component{
 }
 
 function mapStateToProps(state){
-    console.log(state);
     return{
         cash: state.profile.cash,
         name: state.profile.name,

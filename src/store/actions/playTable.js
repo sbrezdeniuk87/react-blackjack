@@ -22,29 +22,6 @@ export function onCreateDibHandler (isDib, value) {
     return (dispatch, getState)=>{
         const state = getState().playTable;
         if(isDib){
-            let div = document.createElement('div');
-       
-            switch(value){
-                case '1':
-                    div.className = classes.dib_1 
-                    break;
-                case '5':
-                    div.className = classes.dib_5
-                    break;
-                case '25':
-                    div.className = classes.dib_25
-                    break;
-                case '50':
-                    div.className = classes.dib_50
-                    break;
-                case '100':
-                    div.className = classes.dib_100
-                    break;
-                default:
-                    div.className = classes.dib_200
-            }   
-       
-            div.innerHTML = value;
             let bet = parseInt(state.bet) + parseInt(value);
             let cash 
             if(state.role !== true){
@@ -53,18 +30,15 @@ export function onCreateDibHandler (isDib, value) {
            
             if(bet !== 0 && cash >= 0 && state.playerHandSum === 0){
                 let socketBet = {
-                    bet, cash, isPlay: true, dib: div.innerHTML
+                    bet, cash, isPlay: true, dib: value
                 }
                 socket.emit('bet', socketBet);
                 dispatch(makeBet(socketBet));
-                document.getElementById('dibsBet').appendChild(div);
-            }
-            
+                onCreateDib(value);
+            }           
                     
-           }
-    }
-    
-     
+        }
+    }     
  }
 
 export function serverData(){
@@ -104,7 +78,6 @@ export function serverData(){
         })
 
         socket.on('finishGame', players=>{
-            console.log('playersfinishGame', players);
             for(let id in players){
                 if(players[id].role === true){
                     const cardServer = {
@@ -132,7 +105,6 @@ export function serverData(){
         })
 
         socket.on('after_delet', serverData=>{
-            console.log('after_delet', Object.keys(serverData).length);
             if(Object.keys(serverData).length === 1){
                 const opponentData={
                     opponentName: '',
@@ -203,16 +175,8 @@ export function pressButton(nameButton){
                 }
         }
         socket.emit('pressButton', {message, disable});
-        // dispatch(pressButtonMessage(message, disable));
     }
     
-}
-
-export function pressButtonMessage(message, disable){
-    return{
-        type: MESSAGE_BUTTON,
-        message, ...disable
-    }
 }
 
 export function getProfileData(){
@@ -230,7 +194,6 @@ export function getProfileData(){
         dispatch(fetchPlaySuccess(profileData))
         socket.emit('new_player', profileData);
         socket.on('response', serverData=>{
-            console.log('response',serverData)
             for(let id in serverData){
                 if(id !== socket.id){
                     if(role !== serverData[id].role){
@@ -245,10 +208,7 @@ export function getProfileData(){
                 }
             }
             
-        })
-            
-        
-        
+        })       
     }
 }
 
@@ -515,8 +475,7 @@ export function onСountingHandler(){
                 }; 
                 socket.emit('winGame', draw_setState);
                 dispatch(drawGame(draw_setState));
-                onDeletDib();  
-                // updateData(cash);
+                onDeletDib(); 
                 alert('Победила дружба!!!!!!!!!!!!!'); 
             }, 600); 
         }else{
@@ -544,6 +503,13 @@ export function onСountingHandler(){
                 alert('Вы проиграли!!!!!!!!!!!!!'); 
             }, 600);
         }
+    }
+}
+
+export function pressButtonMessage(message, disable){
+    return{
+        type: MESSAGE_BUTTON,
+        message, ...disable
     }
 }
 
@@ -632,10 +598,6 @@ export function toProfile (){
     }
 }
 
-
-
-
-
 function getRandomInt(min, max) {
     return Math.floor(Math.random()*(max-min+1)+min);
 }
@@ -678,9 +640,7 @@ async function updateData(cash){
     const dataUpdate ={
         userUpdate, cash
     }
-    const respons = await axios.put('http://localhost:3001/playUser', dataUpdate);
-    console.log(respons);    
-
+    await axios.put('http://localhost:3001/playUser', dataUpdate);
 }
 
 function onCreateDib(value) {

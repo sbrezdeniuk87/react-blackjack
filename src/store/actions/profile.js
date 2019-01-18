@@ -2,25 +2,6 @@ import {FETCH_SUCCESS, DATA_USER, SET_ROLE} from './actionType'
 import axios from 'axios'
 
 
-export function fetchPlaySuccess(){
-    return{
-        type: FETCH_SUCCESS
-    }
-}
-
-export function dataUser(setStateUser){
-    return{
-        type: DATA_USER,
-        ...setStateUser
-    }
-}
-
-export function setRole(chooseRole){
-    return{
-        type: SET_ROLE,
-        chooseRole
-    }
-}
 
 export function getDataUser(userToken){
     return async dispatch =>{
@@ -28,7 +9,6 @@ export function getDataUser(userToken){
             userToken: userToken  
         }
         const respons = await axios.post('http://localhost:3001/profile', data);
-        console.log(respons.data)
         if(respons.data){
             const setStateUser = {
                 cash: respons.data.bet,
@@ -53,5 +33,26 @@ export function chooseRoleHandler(){
         }
     }
 }
+
+export function fetchPlaySuccess(){
+    return{
+        type: FETCH_SUCCESS
+    }
+}
+
+export function dataUser(setStateUser){
+    return{
+        type: DATA_USER,
+        ...setStateUser
+    }
+}
+
+export function setRole(chooseRole){
+    return{
+        type: SET_ROLE,
+        chooseRole
+    }
+}
+
 
 

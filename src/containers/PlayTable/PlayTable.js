@@ -185,7 +185,6 @@ class PlayTable extends Component {
 }
 
 function mapStateToProps(state){
-    console.log(state);
     return{
         deck: state.playTable.deck,
         dibs:state.playTable.dibs,
